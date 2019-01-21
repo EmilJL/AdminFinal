@@ -46,6 +46,8 @@ namespace InfoScreenAdminGUI
             CmbBoxWeekNumbers.ItemsSource = Enumerable.Range(1, 52);
             CmbBoxWeekNumbers.SelectedIndex = GetIso8601WeekOfYear(DateTime.Now) - 1;
             ShowSelectedLunchPlan(GetIso8601WeekOfYear(DateTime.Now));
+            BtnDeleteDish.IsHitTestVisible = false;
+            BtnDeleteDish.Opacity = 0.4;
             try
             {
                 ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
@@ -67,6 +69,14 @@ namespace InfoScreenAdminGUI
         }
         public void ShowSelectedLunchPlan(int week)
         {
+            if (ListViewDatabaseDishes.SelectedIndex == -1)
+            {
+                AddingMealButtonAccessorChange(false);
+            }
+            BtnAddDishToDB.IsHitTestVisible = false;
+            BtnAddDishToDB.Opacity = 0.4;
+
+
             LunchPlan lunchPlan = new LunchPlan();
             
             if (model.LunchPlans.Any(l => l.Week == week))
@@ -384,6 +394,17 @@ namespace InfoScreenAdminGUI
 
         private void TBoxSearchField_TextChanged(object sender, TextChangedEventArgs e)
         {
+            ListViewDatabaseDishes.SelectedIndex = -1;
+            if (TBoxSearchField.Text != String.Empty)
+            {
+                BtnAddDishToDB.IsHitTestVisible = true;
+                BtnAddDishToDB.Opacity = 1;
+            }
+            else
+            {
+                BtnAddDishToDB.IsHitTestVisible = false;
+                BtnAddDishToDB.Opacity = 0.4;
+            }
             try
             {
                 ListViewDatabaseDishes.ItemsSource = model.Meals.Where(m => m.Description.ToLower().Contains(TBoxSearchField.Text.ToLower())).OrderByDescending(m => m.TimesChosen);
@@ -428,6 +449,80 @@ namespace InfoScreenAdminGUI
                 TBoxSearchField.Text = "";
                 ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
             }
+        }
+
+        private void AddingMealButtonAccessorChange(bool access)
+        {
+            if (access == false)
+            {
+                BtnAddDishMonday.Opacity = 0.4;
+                BtnAddDishTuesdsay.Opacity = 0.4;
+                BtnAddDishWednesday.Opacity = 0.4;
+                BtnAddDishThursday.Opacity = 0.4;
+                BtnAddDishFriday.Opacity = 0.4;
+            }
+            else
+            {
+                BtnAddDishMonday.Opacity = 1;
+                BtnAddDishTuesdsay.Opacity = 1;
+                BtnAddDishWednesday.Opacity = 1;
+                BtnAddDishThursday.Opacity = 1;
+                BtnAddDishFriday.Opacity = 1;
+            }
+            BtnAddDishMonday.IsHitTestVisible = access;
+            BtnAddDishTuesdsay.IsHitTestVisible = access;
+            BtnAddDishWednesday.IsHitTestVisible = access;
+            BtnAddDishThursday.IsHitTestVisible = access;
+            BtnAddDishFriday.IsHitTestVisible = access;
+        }
+        private void DeletingMealButtonAccessorChange(bool access)
+        {
+            BtnDeleteDish.IsHitTestVisible = access;
+            if (access == false)
+            {
+                BtnDeleteDish.Opacity = 0.4;
+            }
+            else
+            {
+                BtnDeleteDish.Opacity = 1;
+            }
+        }
+        private void ListViewDatabaseDishes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ListViewDatabaseDishes.SelectedIndex == -1)
+            {
+                AddingMealButtonAccessorChange(false);
+                DeletingMealButtonAccessorChange(false);
+            }
+            else
+            {
+                AddingMealButtonAccessorChange(true);
+                DeletingMealButtonAccessorChange(true);
+            }
+        }
+
+        private void BtnCurrentFoodPlan_Click_1(object sender, RoutedEventArgs e)
+        {
+            ShowSelectedLunchPlan(GetIso8601WeekOfYear(DateTime.Now));
+        }
+
+        private void BtnDeleteDish_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvl => mvl.MealId == model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id).FirstOrDefault().Id);
+                model.MealsVsLunchPlans.Remove(model.MealsVsLunchPlans.Where(mvl => mvl.MealId == model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id).FirstOrDefault());
+            }
+            catch (NullReferenceException err)
+            {
+                Debug.Write($"The dish is not used in any lunchplans. Error message: {err}");
+            }
+            
+            mealHandler.DeleteMeal(model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id);
+           
+            model.Meals.Remove(model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault());
+            ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
+            ListViewDatabaseDishes.SelectedIndex = -1;
         }
     }
 }
