@@ -186,6 +186,8 @@ namespace InfoScreenAdminGUI
         {
             List<MealsVsLunchPlans> mealsVsLunchPlansToDelete = new List<MealsVsLunchPlans>();
             List<LunchPlan> lunchPlans = new List<LunchPlan>();
+            List<Meal> mealsToAddToMvS = new List<Meal>();
+            List<string> weekdaysForMealsToAddToMvS = new List<string>();
             lunchPlans = lunchPlanHandler.GetLunchPlansForWeek(lunchPlan.Week);
             if (lunchPlans.Count > 1)
             {
@@ -212,18 +214,21 @@ namespace InfoScreenAdminGUI
                         model.MealsVsLunchPlans.Remove(mvslToDelete);
                     }
                 }
-                Meal meal = model.Meals.Where(m=> m.Description.ToLower() == TBoxMonday.Text.ToLower()).FirstOrDefault();
-                meal.TimesChosen = meal.TimesChosen + 1;
-                mealHandler.UpdateMeal(meal);
-
-                    MealsVsLunchPlans mvs = new MealsVsLunchPlans
+                Meal meal = new Meal();
+                if (model.Meals.Any(m => m.Description.ToLower() == TBoxMonday.Text.ToLower()))
                 {
-                    LunchPlanId = lunchPlan.Id,
-                    MealId = model.Meals.Where(m => m.Description == TBoxMonday.Text).FirstOrDefault().Id,
-                    Weekday = "Monday"
-                };
-                lunchPlanHandler.AddMealVsLunchPlan(mvs);
-                model.MealsVsLunchPlans.Add(mvs);
+                    meal = model.Meals.Where(m => m.Description.ToLower() == TBoxMonday.Text.ToLower()).FirstOrDefault();
+                    meal.TimesChosen = meal.TimesChosen + 1;
+                    mealHandler.UpdateMeal(meal);
+                }
+                else
+                {
+                    meal.Description = TBoxMonday.Text;
+                    meal.TimesChosen = 1;
+                    mealHandler.AddMeal(meal);
+                }
+                mealsToAddToMvS.Add(meal);
+                weekdaysForMealsToAddToMvS.Add("Monday");
             }
             if (TBoxTuesday.Text != "")
             {
@@ -236,19 +241,22 @@ namespace InfoScreenAdminGUI
                         model.MealsVsLunchPlans.Remove(mvslToDelete);
                     }
                 }
-                Meal meal = model.Meals.Where(m => m.Description.ToLower() == TBoxTuesday.Text.ToLower()).FirstOrDefault();
-                meal.TimesChosen = meal.TimesChosen + 1;
-                mealHandler.UpdateMeal(meal);
-                MealsVsLunchPlans mvs = new MealsVsLunchPlans
+                Meal meal = new Meal();
+                if (model.Meals.Any(m => m.Description.ToLower() == TBoxTuesday.Text.ToLower()))
                 {
-                    LunchPlanId = lunchPlan.Id,
-                    MealId = model.Meals.Where(m => m.Description == TBoxTuesday.Text).FirstOrDefault().Id,
-                    Weekday = "Tuesday"
-                };
-                lunchPlanHandler.AddMealVsLunchPlan(mvs);
-                model.MealsVsLunchPlans.Add(mvs);
+                    meal = model.Meals.Where(m => m.Description.ToLower() == TBoxTuesday.Text.ToLower()).FirstOrDefault();
+                    meal.TimesChosen = meal.TimesChosen + 1;
+                    mealHandler.UpdateMeal(meal);
+                }
+                else
+                {
+                    meal.Description = TBoxTuesday.Text;
+                    meal.TimesChosen = 1;
+                    mealHandler.AddMeal(meal);                    
+                }
+                mealsToAddToMvS.Add(meal);
+                weekdaysForMealsToAddToMvS.Add("Tuesday");
             }
-
             if (TBoxWednesday.Text != "")
             {
                 if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Wednesday"))
@@ -260,17 +268,21 @@ namespace InfoScreenAdminGUI
                         model.MealsVsLunchPlans.Remove(mvslToDelete);
                     }
                 }
-                Meal meal = model.Meals.Where(m => m.Description.ToLower() == TBoxWednesday.Text.ToLower()).FirstOrDefault();
-                meal.TimesChosen = meal.TimesChosen + 1;
-                mealHandler.UpdateMeal(meal);
-                MealsVsLunchPlans mvs = new MealsVsLunchPlans
+                Meal meal = new Meal();
+                if (model.Meals.Any(m => m.Description.ToLower() == TBoxWednesday.Text.ToLower()))
                 {
-                    LunchPlanId = lunchPlan.Id,
-                    MealId = model.Meals.Where(m => m.Description == TBoxWednesday.Text).FirstOrDefault().Id,
-                    Weekday = "Wednesday"
-                };
-                lunchPlanHandler.AddMealVsLunchPlan(mvs);
-                model.MealsVsLunchPlans.Add(mvs);
+                    meal = model.Meals.Where(m => m.Description.ToLower() == TBoxWednesday.Text.ToLower()).FirstOrDefault();
+                    meal.TimesChosen = meal.TimesChosen + 1;
+                    mealHandler.UpdateMeal(meal);
+                }
+                else
+                {
+                    meal.Description = TBoxWednesday.Text;
+                    meal.TimesChosen = 1;
+                    mealHandler.AddMeal(meal);
+                }
+                mealsToAddToMvS.Add(meal);
+                weekdaysForMealsToAddToMvS.Add("Wednesday");
             }
             if (TBoxThursday.Text != "")
             {
@@ -283,17 +295,21 @@ namespace InfoScreenAdminGUI
                         model.MealsVsLunchPlans.Remove(mvslToDelete);
                     }
                 }
-                Meal meal = model.Meals.Where(m => m.Description.ToLower() == TBoxThursday.Text.ToLower()).FirstOrDefault();
-                meal.TimesChosen = meal.TimesChosen + 1;
-                mealHandler.UpdateMeal(meal);
-                MealsVsLunchPlans mvs = new MealsVsLunchPlans
+                Meal meal = new Meal();
+                if (model.Meals.Any(m => m.Description.ToLower() == TBoxThursday.Text.ToLower()))
                 {
-                    LunchPlanId = lunchPlan.Id,
-                    MealId = model.Meals.Where(m => m.Description == TBoxThursday.Text).FirstOrDefault().Id,
-                    Weekday = "Thursday"
-                };
-                lunchPlanHandler.AddMealVsLunchPlan(mvs);
-                model.MealsVsLunchPlans.Add(mvs);
+                    meal = model.Meals.Where(m => m.Description.ToLower() == TBoxThursday.Text.ToLower()).FirstOrDefault();
+                    meal.TimesChosen = meal.TimesChosen + 1;
+                    mealHandler.UpdateMeal(meal);
+                }
+                else
+                {
+                    meal.Description = TBoxThursday.Text;
+                    meal.TimesChosen = 1;
+                    mealHandler.AddMeal(meal);                    
+                }
+                mealsToAddToMvS.Add(meal);
+                weekdaysForMealsToAddToMvS.Add("Thursday");
             }
             if (TBoxFriday.Text != "")
             {
@@ -308,20 +324,45 @@ namespace InfoScreenAdminGUI
                 }
                 if (TBoxFriday.Text != "Fri")
                 {
-                    Meal meal = model.Meals.Where(m => m.Description.ToLower() == TBoxFriday.Text.ToLower()).FirstOrDefault();
-                    meal.TimesChosen = meal.TimesChosen + 1;
-                    mealHandler.UpdateMeal(meal);
+                    Meal meal = new Meal();
+                    if (model.Meals.Any(m => m.Description.ToLower() == TBoxFriday.Text.ToLower()))
+                    {
+                        meal = model.Meals.Where(m => m.Description.ToLower() == TBoxFriday.Text.ToLower()).FirstOrDefault();
+                        meal.TimesChosen = meal.TimesChosen + 1;
+                        mealHandler.UpdateMeal(meal);
+                    }
+                    else
+                    {
+                        meal.Description = TBoxFriday.Text;
+                        meal.TimesChosen = 1;
+                        mealHandler.AddMeal(meal);
+                    }
+                    mealsToAddToMvS.Add(meal);
+                    weekdaysForMealsToAddToMvS.Add("Friday");
                 }
-                MealsVsLunchPlans mvs = new MealsVsLunchPlans
-                {
-                    LunchPlanId = lunchPlan.Id,
-                    MealId = model.Meals.Where(m => m.Description == TBoxFriday.Text).FirstOrDefault().Id,
-                    Weekday = "Friday"
-                };
-                lunchPlanHandler.AddMealVsLunchPlan(mvs);
-                model.MealsVsLunchPlans.Add(mvs);
-                model.LunchPlans.Where(l => l.Id == mvs.LunchPlanId).FirstOrDefault().Week = lunchPlan.Week;
             }
+            model = dbHandler.DbAccess.GetDataAndCreateModel();
+
+            int counter = 0;
+            foreach (Meal meal in mealsToAddToMvS)
+            {
+                meal.Id = model.Meals.Where(m => m.Description == meal.Description).FirstOrDefault().Id;
+                AddMealsVsLunchPlans(lunchPlan.Id, meal.Id, weekdaysForMealsToAddToMvS[counter]);
+                counter++;
+            }
+            ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
+        }
+
+        public void AddMealsVsLunchPlans(int lunchPlanId, int mealId, string weekday)
+        {
+            MealsVsLunchPlans mvs = new MealsVsLunchPlans
+            {
+                LunchPlanId = lunchPlanId,
+                MealId = mealId,
+                Weekday = weekday
+            };
+            lunchPlanHandler.AddMealVsLunchPlan(mvs);
+            model.MealsVsLunchPlans.Add(mvs);
         }
 
         //PERHAPS ENABLE SETTING DATE AND HAVING MULTIPLE MESSAGES STORED?
@@ -451,6 +492,48 @@ namespace InfoScreenAdminGUI
             }
         }
 
+        
+
+       
+
+        /// <summary>
+        /// Enable or disables the ability to click the buttons that adds meals to a lunchplan, or deletes them from the DB, by calling corresponding functions.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListViewDatabaseDishes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ListViewDatabaseDishes.SelectedIndex == -1)
+            {
+                AddingMealButtonAccessorChange(false);
+                DeletingMealButtonAccessorChange(false);
+            }
+            else
+            {
+                AddingMealButtonAccessorChange(true);
+                DeletingMealButtonAccessorChange(true);
+            }
+        }
+        /// <summary>
+        /// Sets the button for deleting meals from DB as either clickable, or not. Also changes the opacity of the button, to reflect its availability.
+        /// </summary>
+        /// <param name="access"></param>
+        private void DeletingMealButtonAccessorChange(bool access)
+        {
+            BtnDeleteDish.IsHitTestVisible = access;
+            if (access == false)
+            {
+                BtnDeleteDish.Opacity = 0.4;
+            }
+            else
+            {
+                BtnDeleteDish.Opacity = 1;
+            }
+        }
+        /// <summary>
+        /// Sets the buttons for adding meals to a lunchplan, as either clickable, or not. Also changes the opacity of the buttons, to reflect their availability.
+        /// </summary>
+        /// <param name="access"></param>
         private void AddingMealButtonAccessorChange(bool access)
         {
             if (access == false)
@@ -475,52 +558,38 @@ namespace InfoScreenAdminGUI
             BtnAddDishThursday.IsHitTestVisible = access;
             BtnAddDishFriday.IsHitTestVisible = access;
         }
-        private void DeletingMealButtonAccessorChange(bool access)
-        {
-            BtnDeleteDish.IsHitTestVisible = access;
-            if (access == false)
-            {
-                BtnDeleteDish.Opacity = 0.4;
-            }
-            else
-            {
-                BtnDeleteDish.Opacity = 1;
-            }
-        }
-        private void ListViewDatabaseDishes_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ListViewDatabaseDishes.SelectedIndex == -1)
-            {
-                AddingMealButtonAccessorChange(false);
-                DeletingMealButtonAccessorChange(false);
-            }
-            else
-            {
-                AddingMealButtonAccessorChange(true);
-                DeletingMealButtonAccessorChange(true);
-            }
-        }
 
+
+        /// <summary>
+        /// Changes the CBox selection to that of the current week of the year.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnCurrentFoodPlan_Click_1(object sender, RoutedEventArgs e)
         {
             ShowSelectedLunchPlan(GetIso8601WeekOfYear(DateTime.Now));
         }
 
+        /// <summary>
+        /// Deletes the selected Meal and its corresponding MealsVsLunchPlans, from the model and the DB. Then it refreshes the ListView.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnDeleteDish_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvl => mvl.MealId == model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id).FirstOrDefault().Id);
-                model.MealsVsLunchPlans.Remove(model.MealsVsLunchPlans.Where(mvl => mvl.MealId == model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id).FirstOrDefault());
+                lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvl => mvl.MealId == model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id && mvl.LunchPlanId == CmbBoxWeekNumbers.SelectedIndex - 1).FirstOrDefault().Id);
+                model.MealsVsLunchPlans.Remove(model.MealsVsLunchPlans.Where(mvl => mvl.MealId == model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id && mvl.LunchPlanId == CmbBoxWeekNumbers.SelectedIndex - 1).FirstOrDefault());
             }
             catch (NullReferenceException err)
             {
-                Debug.Write($"The dish is not used in any lunchplans. Error message: {err}");
+                Debug.Write($"The dish is not used in any lunchplans, working as intended! Error message: {err}");
             }
             
             mealHandler.DeleteMeal(model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id);
-           
             model.Meals.Remove(model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault());
+
             ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
             ListViewDatabaseDishes.SelectedIndex = -1;
         }
