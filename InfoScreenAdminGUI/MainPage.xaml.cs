@@ -17,6 +17,7 @@ using InfoScreenAdminDAL;
 using InfoScreenAdminBusiness;
 using System.Globalization;
 using System.Diagnostics;
+using Windows.UI.Popups;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -252,6 +253,7 @@ namespace InfoScreenAdminGUI
                         meal.Description = TBoxMonday.Text;
                         meal.TimesChosen = 1;
                         mealHandler.AddMeal(meal);
+                        TBlockConsoleLog.Text += $"\nRetten '{meal.Description}' er blevet tilføjet til databasen.";
                     }
                     mealsToAddToMvS.Add(meal);
                     weekdaysForMealsToAddToMvS.Add("Monday");
@@ -283,6 +285,7 @@ namespace InfoScreenAdminGUI
                         meal.Description = TBoxTuesday.Text;
                         meal.TimesChosen = 1;
                         mealHandler.AddMeal(meal);
+                        TBlockConsoleLog.Text += $"\nRetten '{meal.Description}' er blevet tilføjet til databasen.";
                     }
                     mealsToAddToMvS.Add(meal);
                     weekdaysForMealsToAddToMvS.Add("Tuesday");
@@ -314,6 +317,7 @@ namespace InfoScreenAdminGUI
                         meal.Description = TBoxWednesday.Text;
                         meal.TimesChosen = 1;
                         mealHandler.AddMeal(meal);
+                        TBlockConsoleLog.Text += $"\nRetten '{meal.Description}' er blevet tilføjet til databasen.";
                     }
                     mealsToAddToMvS.Add(meal);
                     weekdaysForMealsToAddToMvS.Add("Wednesday");
@@ -344,7 +348,8 @@ namespace InfoScreenAdminGUI
                     {
                         meal.Description = TBoxThursday.Text;
                         meal.TimesChosen = 1;
-                        mealHandler.AddMeal(meal);                    
+                        mealHandler.AddMeal(meal);
+                        TBlockConsoleLog.Text += $"\nRetten '{meal.Description}' er blevet tilføjet til databasen.";
                     }
                     mealsToAddToMvS.Add(meal);
                     weekdaysForMealsToAddToMvS.Add("Thursday");
@@ -378,6 +383,7 @@ namespace InfoScreenAdminGUI
                             meal.Description = TBoxFriday.Text;
                             meal.TimesChosen = 1;
                             mealHandler.AddMeal(meal);
+                            TBlockConsoleLog.Text += $"\nRetten '{meal.Description}' er blevet tilføjet til databasen.";
                         }
                         mealsToAddToMvS.Add(meal);
                         weekdaysForMealsToAddToMvS.Add("Friday");
@@ -404,6 +410,7 @@ namespace InfoScreenAdminGUI
             string searchedText = TBoxSearchField.Text;
             TBoxSearchField.Text = "";
             TBoxSearchField.Text = searchedText;
+            TBlockConsoleLog.Text += $"\nMadplanen er blevet gemt i databasen.";
             model = new Model();
             ShowSelectedLunchPlan((int)CmbBoxWeekNumbers.SelectedItem);
         }
@@ -529,6 +536,7 @@ namespace InfoScreenAdminGUI
             message.AdminId = 1;
             message.Date = DateTime.Now;
             messageHandler.UpdateMessage(message);
+            TBlockConsoleLog.Text += $"\nBeskeden er blevet gemt i databasen.";
         }
 
         private void BtnAddDishToDB_Click(object sender, RoutedEventArgs e)
@@ -541,6 +549,7 @@ namespace InfoScreenAdminGUI
                     TimesChosen = 0
                 };
                 mealHandler.AddMeal(meal);
+                TBlockConsoleLog.Text += $"\nRetten '{meal.Description}' er blevet tilføjet til databasen.";
                 model.Meals.Add(meal);
                 TBoxSearchField.Text = "";
                 ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
@@ -640,13 +649,54 @@ namespace InfoScreenAdminGUI
             {
                 Debug.Write($"The dish is not used in any lunchplans, working as intended! Error message: {err}");
             }
-            
-            mealHandler.DeleteMeal(model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id);
-            model.Meals.Remove(model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault());
-
+            var mealToDelete = model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault();
+            mealHandler.DeleteMeal(mealToDelete.Id);
+            TBlockConsoleLog.Text += $"\nRetten '{mealToDelete.Description}' er blevet slettet fra databasen, samt tilhørende madplaner.";
+            model.Meals.Remove(mealToDelete);
             ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
             ListViewDatabaseDishes.SelectedIndex = -1;
             ShowSelectedLunchPlan((int)CmbBoxWeekNumbers.SelectedItem);
+        }
+
+        private void TBoxTitle_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (TBoxTitle.Text == @"Titel her!")
+            {
+                TBoxTitle.Text = "";
+            }
+        }
+
+        private void TBoxMessage_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (TBoxMessage.Text == @"Besked her!")
+            {
+                TBoxMessage.Text = "";
+            }
+        }
+
+        private async void TBoxMessage_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TBoxMessage.Text.Count() >= 200)
+            {
+                var dialog = new MessageDialog($"Beskeden er nu på {TBoxMessage.Text.Count()} tegn. Det er ikke muligt at gemme en besked, med mere end 200.");
+                await dialog.ShowAsync();
+            }
+        }
+
+        private void TBoxTitle_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (TBoxTitle.Text == string.Empty)
+            {
+                TBoxTitle.Text = @"Titel her!";
+            }
+        }
+
+        private void TBoxMessage_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (TBoxMessage.Text == string.Empty)
+            {
+                TBoxMessage.Text = @"Besked her!";
+            }
         }
     }
 }

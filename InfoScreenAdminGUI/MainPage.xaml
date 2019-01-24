@@ -153,14 +153,13 @@
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="TBoxTitle" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Left" Margin="5,0,0,0" Text="Titel her!" VerticalAlignment="Center" Height="45" Width="287"/>
+                        <TextBox x:Name="TBoxTitle" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Left" Margin="5,0,0,0" Text="Titel her!" VerticalAlignment="Center" Height="45" Width="287" GotFocus="TBoxTitle_GotFocus" LostFocus="TBoxTitle_LostFocus"/>
                             <Button x:Name="BtnSaveMessage" Grid.Column="1" Grid.ColumnSpan="1" Content="Gem" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Click="BtnSaveMessage_Click_1"/>
-                        <Button x:Name="BtnEditMessage" Grid.Column="2" Grid.ColumnSpan="1" Content="ret" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"/>
 
                     </Grid>
 
-
-                    <TextBox x:Name="TBoxMessage" Grid.Row="1" Grid.RowSpan="1" HorizontalAlignment="Left" Margin="5,5,0,0" Text="Besked her!" VerticalAlignment="Top" Height="auto" Width="auto" MinHeight="100" MinWidth="300" TextWrapping="Wrap"/>
+                    
+                    <TextBox x:Name="TBoxMessage" Grid.Row="1" Grid.RowSpan="1" HorizontalAlignment="Left" Margin="5,5,0,0" Text="Besked her!" VerticalAlignment="Top" Height="auto" Width="auto" MinHeight="100" MinWidth="300" TextWrapping="Wrap" GotFocus="TBoxMessage_GotFocus" TextChanged="TBoxMessage_TextChanged" LostFocus="TBoxMessage_LostFocus"/>
                 </Grid>
             </PivotItem>
             <PivotItem Header="Rediger Layout">
@@ -185,7 +184,7 @@
         </Grid>
         <!--Output window grid-->
         <Grid Grid.Row="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" Margin="40,40,40,40" VerticalAlignment="Stretch">
-            <TextBlock x:Name="TBlockConsoleLog" TextWrapping="Wrap" Text="Message" Margin="5,5,5,5" Width="auto" Height="auto"/>
+            <TextBlock x:Name="TBlockConsoleLog" TextWrapping="Wrap" Text="" Margin="5,5,5,5" Width="auto" Height="auto"/>
 
         </Grid>
     </Grid>
