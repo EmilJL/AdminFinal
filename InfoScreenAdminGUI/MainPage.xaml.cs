@@ -55,10 +55,8 @@ namespace InfoScreenAdminGUI
             catch (ArgumentNullException e)
             {
                 Debug.Write(e);
-            }
-            
+            } 
         }
-
         private void UpdateContent()
         {
         }
@@ -75,18 +73,32 @@ namespace InfoScreenAdminGUI
             }
             BtnAddDishToDB.IsHitTestVisible = false;
             BtnAddDishToDB.Opacity = 0.4;
-
-
             LunchPlan lunchPlan = new LunchPlan();
-            
             if (model.LunchPlans.Any(l => l.Week == week))
             {
+                if (model.LunchPlans.Where(l => l.Week == week).ToList().Count > 1)
+                {
+                    for (int i = 0; i < model.LunchPlans.Where(l => l.Week == week).ToList().Count - 1; i++)
+                    {
+                        lunchPlanHandler.DeleteLunchPlan(model.LunchPlans.Where(l => l.Week == week).ToList()[i].Id);
+                    }
+                }
                 lunchPlan = model.LunchPlans.Where(l => l.Week == week).FirstOrDefault();
-                var mealsVsLunchPlan = model.MealsVsLunchPlans.Where(mvl => mvl.LunchPlanId == lunchPlan.Id).ToList();
+                List<MealsVsLunchPlans> mealsVsLunchPlan = new List<MealsVsLunchPlans>();
+                mealsVsLunchPlan = model.MealsVsLunchPlans.Where(mvl => mvl.LunchPlanId == lunchPlan.Id).ToList();
                 int mealId = 0;
+                List<MealsVsLunchPlans> mvsToDelete = new List<MealsVsLunchPlans>();
                 if (mealsVsLunchPlan.Any(mvl => mvl.Weekday.ToLower() == "monday" || mvl.Weekday.ToLower() == "mandag"))
                 {
-                    mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "monday" || mvl.Weekday.ToLower() == "mandag").FirstOrDefault().MealId;
+                    if (mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "monday").ToList().Count > 1)
+                    {
+                        for (int i = 0; i < mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "monday").ToList().Count - 1; i++)
+                        {
+                            mvsToDelete.Add(mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "monday").ToList()[i]);
+                            lunchPlanHandler.DeleteMealVsLunchPlan(mvsToDelete.Last().Id);
+                        }
+                    }
+                    mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "monday" || mvl.Weekday.ToLower() == "mandag").LastOrDefault().MealId;
                     TBoxMonday.Text = model.Meals.Where(m => m.Id == mealId).FirstOrDefault().Description;
                 }
                 else
@@ -95,7 +107,15 @@ namespace InfoScreenAdminGUI
                 }
                 if (mealsVsLunchPlan.Any(mvl => mvl.Weekday.ToLower() == "tuesday" || mvl.Weekday.ToLower() == "tirsdag"))
                 {
-                    mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "tuesday" || mvl.Weekday.ToLower() == "tirsdag").FirstOrDefault().MealId;
+                    if (mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "tuesday").ToList().Count > 1)
+                    {
+                        for (int i = 0; i < mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "tuesday").ToList().Count - 1; i++)
+                        {
+                            mvsToDelete.Add(mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "tuesday").ToList()[i]);
+                            lunchPlanHandler.DeleteMealVsLunchPlan(mvsToDelete.Last().Id);
+                        }
+                    }
+                    mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "tuesday" || mvl.Weekday.ToLower() == "tirsdag").LastOrDefault().MealId;
                     TBoxTuesday.Text = model.Meals.Where(m => m.Id == mealId).FirstOrDefault().Description;
                 }
                 else
@@ -104,7 +124,15 @@ namespace InfoScreenAdminGUI
                 }
                 if (mealsVsLunchPlan.Any(mvl => mvl.Weekday.ToLower() == "wednesday" || mvl.Weekday.ToLower() == "onsdag"))
                 {
-                    mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "wednesday" || mvl.Weekday.ToLower() == "onsdag").FirstOrDefault().MealId;
+                    if (mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "wednesday").ToList().Count > 1)
+                    {
+                        for (int i = 0; i < mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "wednesday").ToList().Count - 1; i++)
+                        {
+                            mvsToDelete.Add(mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "wednesday").ToList()[i]);
+                            lunchPlanHandler.DeleteMealVsLunchPlan(mvsToDelete.Last().Id);
+                        }
+                    }
+                    mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "wednesday" || mvl.Weekday.ToLower() == "onsdag").LastOrDefault().MealId;
                     TBoxWednesday.Text = model.Meals.Where(m => m.Id == mealId).FirstOrDefault().Description;
                 }
                 else
@@ -113,7 +141,15 @@ namespace InfoScreenAdminGUI
                 }
                 if (mealsVsLunchPlan.Any(mvl => mvl.Weekday.ToLower() == "thursday" || mvl.Weekday.ToLower() == "torsdag"))
                 {
-                    mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "thursday" || mvl.Weekday.ToLower() == "torsdag").FirstOrDefault().MealId;
+                    if (mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "thursday").ToList().Count > 1)
+                    {
+                        for (int i = 0; i < mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "thursday").ToList().Count - 1; i++)
+                        {
+                            mvsToDelete.Add(mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "thursday").ToList()[i]);
+                            lunchPlanHandler.DeleteMealVsLunchPlan(mvsToDelete.Last().Id);
+                        }
+                    }
+                    mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "thursday" || mvl.Weekday.ToLower() == "torsdag").LastOrDefault().MealId;
                     TBoxThursday.Text = model.Meals.Where(m => m.Id == mealId).FirstOrDefault().Description;
                 }
                 else
@@ -128,13 +164,25 @@ namespace InfoScreenAdminGUI
                 {
                     if (mealsVsLunchPlan.Any(mvl => mvl.Weekday.ToLower() == "friday" || mvl.Weekday.ToLower() == "fredag"))
                     {
-                        mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "friday" || mvl.Weekday.ToLower() == "fredag").FirstOrDefault().MealId;
+                        if (mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "friday").ToList().Count > 1)
+                        {
+                            for (int i = 0; i < mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "friday").ToList().Count - 1; i++)
+                            {
+                                mvsToDelete.Add(mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "friday").ToList()[i]);
+                                lunchPlanHandler.DeleteMealVsLunchPlan(mvsToDelete.Last().Id);
+                            }
+                        }
+                        mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "friday" || mvl.Weekday.ToLower() == "fredag").LastOrDefault().MealId;
                         TBoxFriday.Text = model.Meals.Where(m => m.Id == mealId).FirstOrDefault().Description;
                     }
                     else
                     {
                         TBoxFriday.Text = "";
                     }
+                }
+                foreach (MealsVsLunchPlans mvs in mvsToDelete)
+                {
+                    model.MealsVsLunchPlans.Remove(mvs);
                 }
             }
             else
@@ -152,10 +200,8 @@ namespace InfoScreenAdminGUI
                     TBoxFriday.Text = "";
                 }
             }
+            model = dbHandler.DbAccess.GetDataAndCreateModel();
         }
-
-        
-
         // This presumes that weeks start with Monday.
         // Week 1 is the 1st week of the year with a Thursday in it.
         public static int GetIso8601WeekOfYear(DateTime time)
@@ -185,160 +231,164 @@ namespace InfoScreenAdminGUI
         private void CheckAndAddMealsVsLunchPlans(LunchPlan lunchPlan)
         {
             List<MealsVsLunchPlans> mealsVsLunchPlansToDelete = new List<MealsVsLunchPlans>();
-            List<LunchPlan> lunchPlans = new List<LunchPlan>();
             List<Meal> mealsToAddToMvS = new List<Meal>();
             List<string> weekdaysForMealsToAddToMvS = new List<string>();
-            lunchPlans = lunchPlanHandler.GetLunchPlansForWeek(lunchPlan.Week);
-            if (lunchPlans.Count > 1)
-            {
-                
-                lunchPlans.RemoveAt(lunchPlans.Count - 1);
-                
-                foreach (LunchPlan lunchP in lunchPlans)
-                {
-                    lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchP.Id).FirstOrDefault().Id);
-                    lunchPlanHandler.DeleteLunchPlan(lunchP.Id);
-                    model.MealsVsLunchPlans.Remove(model.MealsVsLunchPlans.Where(m => m.LunchPlanId == lunchP.Id).FirstOrDefault());
-                    model.LunchPlans.Remove(model.LunchPlans.Where(l => l.Id == lunchP.Id).FirstOrDefault());
-                }
-            }
             if (TBoxMonday.Text != "")
             {
-                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Monday"))
+                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Monday") && TBoxMonday.Text.ToLower() == model.Meals.Where(m => m.Id == model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Monday").FirstOrDefault().MealId).FirstOrDefault().Description.ToLower())
                 {
-                    mealsVsLunchPlansToDelete = model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Monday").ToList();
-                    //mealsVsLunchPlansToDelete.RemoveAt(mealsVsLunchPlansToDelete.Count - 1);
-                    foreach (var mvslToDelete in mealsVsLunchPlansToDelete)
-                    {
-                        lunchPlanHandler.DeleteMealVsLunchPlan(mvslToDelete.Id);
-                        model.MealsVsLunchPlans.Remove(mvslToDelete);
-                    }
-                }
-                Meal meal = new Meal();
-                if (model.Meals.Any(m => m.Description.ToLower() == TBoxMonday.Text.ToLower()))
-                {
-                    meal = model.Meals.Where(m => m.Description.ToLower() == TBoxMonday.Text.ToLower()).FirstOrDefault();
-                    meal.TimesChosen = meal.TimesChosen + 1;
-                    mealHandler.UpdateMeal(meal);
                 }
                 else
-                {
-                    meal.Description = TBoxMonday.Text;
-                    meal.TimesChosen = 1;
-                    mealHandler.AddMeal(meal);
-                }
-                mealsToAddToMvS.Add(meal);
-                weekdaysForMealsToAddToMvS.Add("Monday");
-            }
-            if (TBoxTuesday.Text != "")
-            {
-                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Tuesday"))
-                {
-                    mealsVsLunchPlansToDelete = model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Tuesday").ToList();
-                    foreach (var mvslToDelete in mealsVsLunchPlansToDelete)
-                    {
-                        lunchPlanHandler.DeleteMealVsLunchPlan(mvslToDelete.Id);
-                        model.MealsVsLunchPlans.Remove(mvslToDelete);
-                    }
-                }
-                Meal meal = new Meal();
-                if (model.Meals.Any(m => m.Description.ToLower() == TBoxTuesday.Text.ToLower()))
-                {
-                    meal = model.Meals.Where(m => m.Description.ToLower() == TBoxTuesday.Text.ToLower()).FirstOrDefault();
-                    meal.TimesChosen = meal.TimesChosen + 1;
-                    mealHandler.UpdateMeal(meal);
-                }
-                else
-                {
-                    meal.Description = TBoxTuesday.Text;
-                    meal.TimesChosen = 1;
-                    mealHandler.AddMeal(meal);                    
-                }
-                mealsToAddToMvS.Add(meal);
-                weekdaysForMealsToAddToMvS.Add("Tuesday");
-            }
-            if (TBoxWednesday.Text != "")
-            {
-                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Wednesday"))
-                {
-                    mealsVsLunchPlansToDelete = model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Wednesday").ToList();
-                    foreach (var mvslToDelete in mealsVsLunchPlansToDelete)
-                    {
-                        lunchPlanHandler.DeleteMealVsLunchPlan(mvslToDelete.Id);
-                        model.MealsVsLunchPlans.Remove(mvslToDelete);
-                    }
-                }
-                Meal meal = new Meal();
-                if (model.Meals.Any(m => m.Description.ToLower() == TBoxWednesday.Text.ToLower()))
-                {
-                    meal = model.Meals.Where(m => m.Description.ToLower() == TBoxWednesday.Text.ToLower()).FirstOrDefault();
-                    meal.TimesChosen = meal.TimesChosen + 1;
-                    mealHandler.UpdateMeal(meal);
-                }
-                else
-                {
-                    meal.Description = TBoxWednesday.Text;
-                    meal.TimesChosen = 1;
-                    mealHandler.AddMeal(meal);
-                }
-                mealsToAddToMvS.Add(meal);
-                weekdaysForMealsToAddToMvS.Add("Wednesday");
-            }
-            if (TBoxThursday.Text != "")
-            {
-                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Thursday"))
-                {
-                    mealsVsLunchPlansToDelete = model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Thursday").ToList();
-                    foreach (var mvslToDelete in mealsVsLunchPlansToDelete)
-                    {
-                        lunchPlanHandler.DeleteMealVsLunchPlan(mvslToDelete.Id);
-                        model.MealsVsLunchPlans.Remove(mvslToDelete);
-                    }
-                }
-                Meal meal = new Meal();
-                if (model.Meals.Any(m => m.Description.ToLower() == TBoxThursday.Text.ToLower()))
-                {
-                    meal = model.Meals.Where(m => m.Description.ToLower() == TBoxThursday.Text.ToLower()).FirstOrDefault();
-                    meal.TimesChosen = meal.TimesChosen + 1;
-                    mealHandler.UpdateMeal(meal);
-                }
-                else
-                {
-                    meal.Description = TBoxThursday.Text;
-                    meal.TimesChosen = 1;
-                    mealHandler.AddMeal(meal);                    
-                }
-                mealsToAddToMvS.Add(meal);
-                weekdaysForMealsToAddToMvS.Add("Thursday");
-            }
-            if (TBoxFriday.Text != "")
-            {
-                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Friday"))
-                {
-                    mealsVsLunchPlansToDelete = model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Friday").ToList();
-                    foreach (var mvslToDelete in mealsVsLunchPlansToDelete)
-                    {
-                        lunchPlanHandler.DeleteMealVsLunchPlan(mvslToDelete.Id);
-                        model.MealsVsLunchPlans.Remove(mvslToDelete);
-                    }
-                }
-                if (TBoxFriday.Text != "Fri")
                 {
                     Meal meal = new Meal();
-                    if (model.Meals.Any(m => m.Description.ToLower() == TBoxFriday.Text.ToLower()))
+                    if (model.Meals.Any(m => m.Description.ToLower() == TBoxMonday.Text.ToLower()))
                     {
-                        meal = model.Meals.Where(m => m.Description.ToLower() == TBoxFriday.Text.ToLower()).FirstOrDefault();
+                        meal = model.Meals.Where(m => m.Description.ToLower() == TBoxMonday.Text.ToLower()).FirstOrDefault();
                         meal.TimesChosen = meal.TimesChosen + 1;
                         mealHandler.UpdateMeal(meal);
                     }
                     else
                     {
-                        meal.Description = TBoxFriday.Text;
+                        meal.Description = TBoxMonday.Text;
                         meal.TimesChosen = 1;
                         mealHandler.AddMeal(meal);
                     }
                     mealsToAddToMvS.Add(meal);
-                    weekdaysForMealsToAddToMvS.Add("Friday");
+                    weekdaysForMealsToAddToMvS.Add("Monday");
+                }
+            }
+            else
+            {
+                if (model.MealsVsLunchPlans.Any(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Monday"))
+                {
+                    lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Monday").FirstOrDefault().Id);
+                }
+            }
+            if (TBoxTuesday.Text != "")
+            {
+                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Tuesday") && TBoxTuesday.Text.ToLower() == model.Meals.Where(m => m.Id == model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Tuesday").FirstOrDefault().MealId).FirstOrDefault().Description.ToLower())
+                {
+                }
+                else
+                {
+                    Meal meal = new Meal();
+                    if (model.Meals.Any(m => m.Description.ToLower() == TBoxTuesday.Text.ToLower()))
+                    {
+                        meal = model.Meals.Where(m => m.Description.ToLower() == TBoxTuesday.Text.ToLower()).FirstOrDefault();
+                        meal.TimesChosen = meal.TimesChosen + 1;
+                        mealHandler.UpdateMeal(meal);
+                    }
+                    else
+                    {
+                        meal.Description = TBoxTuesday.Text;
+                        meal.TimesChosen = 1;
+                        mealHandler.AddMeal(meal);
+                    }
+                    mealsToAddToMvS.Add(meal);
+                    weekdaysForMealsToAddToMvS.Add("Tuesday");
+                }
+            }
+            else
+            {
+                if (model.MealsVsLunchPlans.Any(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Tuesday"))
+                {
+                    lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Tuesday").FirstOrDefault().Id);
+                }
+            }
+            if (TBoxWednesday.Text != "")
+            {
+                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Wednesday") && TBoxWednesday.Text.ToLower() == model.Meals.Where(m => m.Id == model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Wednesday").FirstOrDefault().MealId).FirstOrDefault().Description.ToLower())
+                {
+                }
+                else
+                {
+                    Meal meal = new Meal();
+                    if (model.Meals.Any(m => m.Description.ToLower() == TBoxWednesday.Text.ToLower()))
+                    {
+                        meal = model.Meals.Where(m => m.Description.ToLower() == TBoxWednesday.Text.ToLower()).FirstOrDefault();
+                        meal.TimesChosen = meal.TimesChosen + 1;
+                        mealHandler.UpdateMeal(meal);
+                    }
+                    else
+                    {
+                        meal.Description = TBoxWednesday.Text;
+                        meal.TimesChosen = 1;
+                        mealHandler.AddMeal(meal);
+                    }
+                    mealsToAddToMvS.Add(meal);
+                    weekdaysForMealsToAddToMvS.Add("Wednesday");
+                }
+            }
+            else
+            {
+                if (model.MealsVsLunchPlans.Any(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Wednesday"))
+                {
+                    lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Wednesday").FirstOrDefault().Id);
+                }
+            }
+            if (TBoxThursday.Text != "")
+            {
+                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Thursday") && TBoxThursday.Text.ToLower() == model.Meals.Where(m => m.Id == model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Thursday").FirstOrDefault().MealId).FirstOrDefault().Description.ToLower())
+                {
+                }
+                else
+                {
+                    Meal meal = new Meal();
+                    if (model.Meals.Any(m => m.Description.ToLower() == TBoxThursday.Text.ToLower()))
+                    {
+                        meal = model.Meals.Where(m => m.Description.ToLower() == TBoxThursday.Text.ToLower()).FirstOrDefault();
+                        meal.TimesChosen = meal.TimesChosen + 1;
+                        mealHandler.UpdateMeal(meal);
+                    }
+                    else
+                    {
+                        meal.Description = TBoxThursday.Text;
+                        meal.TimesChosen = 1;
+                        mealHandler.AddMeal(meal);                    
+                    }
+                    mealsToAddToMvS.Add(meal);
+                    weekdaysForMealsToAddToMvS.Add("Thursday");
+                }
+            }
+            else
+            {
+                if (model.MealsVsLunchPlans.Any(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Thursday"))
+                {
+                    lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Thursday").FirstOrDefault().Id);
+                }
+            }
+            if (TBoxFriday.Text != "")
+            {
+                if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Friday") && TBoxFriday.Text.ToLower() == model.Meals.Where(m => m.Id == model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Friday").FirstOrDefault().MealId).FirstOrDefault().Description.ToLower())
+                {
+                }
+                else
+                {
+                    if (TBoxFriday.Text != "Fri")
+                    {
+                        Meal meal = new Meal();
+                        if (model.Meals.Any(m => m.Description.ToLower() == TBoxFriday.Text.ToLower()))
+                        {
+                            meal = model.Meals.Where(m => m.Description.ToLower() == TBoxFriday.Text.ToLower()).FirstOrDefault();
+                            meal.TimesChosen = meal.TimesChosen + 1;
+                            mealHandler.UpdateMeal(meal);
+                        }
+                        else
+                        {
+                            meal.Description = TBoxFriday.Text;
+                            meal.TimesChosen = 1;
+                            mealHandler.AddMeal(meal);
+                        }
+                        mealsToAddToMvS.Add(meal);
+                        weekdaysForMealsToAddToMvS.Add("Friday");
+                    }
+                }
+            }
+            else
+            {
+                if (model.MealsVsLunchPlans.Any(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Friday"))
+                {
+                    lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Friday").FirstOrDefault().Id);
                 }
             }
             model = dbHandler.DbAccess.GetDataAndCreateModel();
@@ -351,6 +401,11 @@ namespace InfoScreenAdminGUI
                 counter++;
             }
             ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
+            string searchedText = TBoxSearchField.Text;
+            TBoxSearchField.Text = "";
+            TBoxSearchField.Text = searchedText;
+            model = new Model();
+            ShowSelectedLunchPlan((int)CmbBoxWeekNumbers.SelectedItem);
         }
 
         public void AddMealsVsLunchPlans(int lunchPlanId, int mealId, string weekday)
@@ -362,15 +417,11 @@ namespace InfoScreenAdminGUI
                 Weekday = weekday
             };
             lunchPlanHandler.AddMealVsLunchPlan(mvs);
-            model.MealsVsLunchPlans.Add(mvs);
         }
-
         //PERHAPS ENABLE SETTING DATE AND HAVING MULTIPLE MESSAGES STORED?
         private void BtnSaveMessage_Click(object sender, RoutedEventArgs e)
-        {
-            
+        {     
         }
-
         private void CmbBoxWeekNumbers_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
             ShowSelectedLunchPlan((int)CmbBoxWeekNumbers.SelectedItem);
@@ -409,11 +460,6 @@ namespace InfoScreenAdminGUI
             mealsOfWeek.Add(TBoxWednesday.Text);
             mealsOfWeek.Add(TBoxThursday.Text);
             mealsOfWeek.Add(TBoxFriday.Text);
-            //if (mealsOfWeek.Any(s => s == ""))
-            //{
-            //    // ADD ERRORMESSAGE
-            //    return;
-            //}
             LunchPlan lunchPlan = new LunchPlan();
             List<Meal> meals = new List<Meal>();
 
@@ -436,24 +482,33 @@ namespace InfoScreenAdminGUI
         private void TBoxSearchField_TextChanged(object sender, TextChangedEventArgs e)
         {
             ListViewDatabaseDishes.SelectedIndex = -1;
-            if (TBoxSearchField.Text != String.Empty)
+            if (TBoxSearchField.Text != String.Empty && TBoxSearchField.Text != @"Søg på retter")
             {
                 BtnAddDishToDB.IsHitTestVisible = true;
                 BtnAddDishToDB.Opacity = 1;
+                try
+                {
+                    ListViewDatabaseDishes.ItemsSource = model.Meals.Where(m => m.Description.ToLower().Contains(TBoxSearchField.Text.ToLower())).OrderByDescending(m => m.TimesChosen);
+                }
+                catch (ArgumentNullException ex)
+                {
+                    Debug.Write(ex);
+                }
             }
             else
             {
                 BtnAddDishToDB.IsHitTestVisible = false;
                 BtnAddDishToDB.Opacity = 0.4;
+                try
+                {
+                    ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
+                }
+                catch (ArgumentNullException ex)
+                {
+                    Debug.Write(ex);
+                }
             }
-            try
-            {
-                ListViewDatabaseDishes.ItemsSource = model.Meals.Where(m => m.Description.ToLower().Contains(TBoxSearchField.Text.ToLower())).OrderByDescending(m => m.TimesChosen);
-            }
-            catch (ArgumentNullException ex)
-            {
-                Debug.Write(ex);
-            }
+            
             
         }
 
@@ -491,10 +546,6 @@ namespace InfoScreenAdminGUI
                 ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
             }
         }
-
-        
-
-       
 
         /// <summary>
         /// Enable or disables the ability to click the buttons that adds meals to a lunchplan, or deletes them from the DB, by calling corresponding functions.
@@ -558,8 +609,6 @@ namespace InfoScreenAdminGUI
             BtnAddDishThursday.IsHitTestVisible = access;
             BtnAddDishFriday.IsHitTestVisible = access;
         }
-
-
         /// <summary>
         /// Changes the CBox selection to that of the current week of the year.
         /// </summary>
@@ -579,8 +628,13 @@ namespace InfoScreenAdminGUI
         {
             try
             {
-                lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvl => mvl.MealId == model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id && mvl.LunchPlanId == CmbBoxWeekNumbers.SelectedIndex - 1).FirstOrDefault().Id);
-                model.MealsVsLunchPlans.Remove(model.MealsVsLunchPlans.Where(mvl => mvl.MealId == model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id && mvl.LunchPlanId == CmbBoxWeekNumbers.SelectedIndex - 1).FirstOrDefault());
+                string test = ListViewDatabaseDishes.SelectedItem.ToString().ToLower();
+                var mealsVsLunchPlansToDelete = model.MealsVsLunchPlans.Where(mvl => mvl.MealId == model.Meals.Where(m => m.Description.ToLower() == ListViewDatabaseDishes.SelectedItem.ToString().ToLower()).FirstOrDefault().Id).ToList();
+                foreach (MealsVsLunchPlans mealsVsLunchPlan in mealsVsLunchPlansToDelete)
+                {
+                    lunchPlanHandler.DeleteMealVsLunchPlan(mealsVsLunchPlan.Id);
+                    model.MealsVsLunchPlans.Remove(mealsVsLunchPlan);
+                }
             }
             catch (NullReferenceException err)
             {
@@ -592,6 +646,7 @@ namespace InfoScreenAdminGUI
 
             ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
             ListViewDatabaseDishes.SelectedIndex = -1;
+            ShowSelectedLunchPlan((int)CmbBoxWeekNumbers.SelectedItem);
         }
     }
 }
