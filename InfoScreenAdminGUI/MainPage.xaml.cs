@@ -625,7 +625,7 @@ namespace InfoScreenAdminGUI
         /// <param name="e"></param>
         private void BtnCurrentFoodPlan_Click_1(object sender, RoutedEventArgs e)
         {
-            ShowSelectedLunchPlan(GetIso8601WeekOfYear(DateTime.Now));
+            CmbBoxWeekNumbers.SelectedIndex = GetIso8601WeekOfYear(DateTime.Now) - 1;
         }
 
         /// <summary>
