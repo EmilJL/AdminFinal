@@ -1,3 +1,33 @@
-<p>
-  modal works!
-</p>
+<div class="modal-header">
+    <!-- Button to close the overlay navigation -->
+    <button type="button" class="close" aria-label="Close" (click)="modalController.dismiss()">
+                    <span aria-hidden="true">&times;</span>
+        </button>
+</div>
+<form [formGroup]="EditedForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+        <ion-label>Week</ion-label>
+        <ion-input type="text" formControlName="week"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label>Monday</ion-label>
+        <ion-input type="text" formControlName="monday"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label>Tuesday</ion-label>
+        <ion-input type="text" formControlName="tuesday"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label>Wednesday</ion-label>
+        <ion-input type="text" formControlName="wednesday"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label>Thursday</ion-label>
+        <ion-input type="text" formControlName="thursday"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label>Friday</ion-label>
+        <ion-input type="text" formControlName="friday"></ion-input>
+    </ion-item>
+    <ion-button type="submit" [disabled]="!EditedForm.valid">Submit</ion-button>
+</form>

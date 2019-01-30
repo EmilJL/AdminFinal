@@ -14,17 +14,19 @@ const httpOptions = {
 export class ApiConnectionService {
   private CurrUser: any;
   private mealsVsLunchPlan : MealsVsLunchPlans[];
-  private mealsVsLunchPlanApi : string = 'https://webapiinfoscreenaspit.azurewebsites.net/api/ViewMealsVsLunchPlansJoins'
+  private mealsVsLunchPlanApi : string = 'http://localhost:3019/api/ViewMealsVsLunchPlansJoins'
   constructor(private http: HttpClient) { }
 
   public GetLunchPlan() : Observable<MealsVsLunchPlans[]> {
     let temp : BehaviorSubject<MealsVsLunchPlans[]> = new BehaviorSubject<MealsVsLunchPlans[]>(this.mealsVsLunchPlan);
-    this.http.get<MealsVsLunchPlans[]>(this.mealsVsLunchPlanApi, {responseType: 'json'}).subscribe(lunchPlan => { this.mealsVsLunchPlan = Convert.toMealsVsLunchPlans(JSON.stringify(lunchPlan)); temp.next(lunchPlan)}, error => console.log(error), () => {  temp.next(this.mealsVsLunchPlan); console.log(this.mealsVsLunchPlan) })
+    this.http.get<MealsVsLunchPlans[]>(this.mealsVsLunchPlanApi).subscribe(lunchPlan => { this.mealsVsLunchPlan = Convert.toMealsVsLunchPlans(JSON.stringify(lunchPlan)); temp.next(lunchPlan)}, error => console.log(error), () => {  temp.next(this.mealsVsLunchPlan); console.log(this.mealsVsLunchPlan) })
     return temp.asObservable();
   }
-  public Edit(MealsVsLunchPlans: MealsVsLunchPlans[]): Observable<MealsVsLunchPlans[]> {
-    const temp = this.http.put<MealsVsLunchPlans[]>('https://webapiinfoscreenaspit.azurewebsites.net/api/ViewMealsVsLunchPlansJoins/' + MealsVsLunchPlans[0].week, Convert.mealsVsLunchPlansToJson(MealsVsLunchPlans))
+  public Edit(MealsVsLunchPlans: MealsVsLunchPlans): Observable<MealsVsLunchPlans[]> {
+    let temp : BehaviorSubject<MealsVsLunchPlans[]> = new BehaviorSubject<MealsVsLunchPlans[]>(this.mealsVsLunchPlan);
+    console.log(MealsVsLunchPlans)
+    this.http.put<MealsVsLunchPlans[]>(this.mealsVsLunchPlanApi + '/' + MealsVsLunchPlans.week, JSON.stringify(MealsVsLunchPlans)).subscribe(lunchplans => this.mealsVsLunchPlan = Convert.toMealsVsLunchPlans(JSON.stringify(lunchplans)), error => console.log(error), () => { temp.next(this.mealsVsLunchPlan)})
     console.log(temp);
-    return temp;
+    return temp.asObservable();
   }
 }
