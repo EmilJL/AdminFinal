@@ -8,13 +8,13 @@
 // match the expected interface, even if the JSON is valid.
 
 export interface MealsVsLunchPlans {
-    weekday:     string;
-    description: string;
-    timesChosen: number;
-    week:        number;
-    mealId:      number;
-    lunchPlanId: number;
-    id:          number;
+    id:        number;
+    week:      number;
+    monday:    null | string;
+    tuesday:   string;
+    wednesday: null | string;
+    thursday:  null | string;
+    friday:    null | string;
 }
 
 // Converts JSON strings to/from your types
@@ -159,13 +159,13 @@ export namespace Convert {
 
     const typeMap: any = {
         "MealsVsLunchPlans": o([
-            { json: "Weekday", js: "weekday", typ: "" },
-            { json: "Description", js: "description", typ: "" },
-            { json: "TimesChosen", js: "timesChosen", typ: 0 },
-            { json: "Week", js: "week", typ: 0 },
-            { json: "MealId", js: "mealId", typ: 0 },
-            { json: "LunchPlanId", js: "lunchPlanId", typ: 0 },
             { json: "Id", js: "id", typ: 0 },
+            { json: "Week", js: "week", typ: 0 },
+            { json: "Monday", js: "monday", typ: u(null, "") },
+            { json: "Tuesday", js: "tuesday", typ: "" },
+            { json: "Wednesday", js: "wednesday", typ: u(null, "") },
+            { json: "Thursday", js: "thursday", typ: u(null, "") },
+            { json: "Friday", js: "friday", typ: u(null, "") },
         ], false),
     };
 }

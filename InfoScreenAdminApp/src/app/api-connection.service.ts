@@ -22,4 +22,9 @@ export class ApiConnectionService {
     this.http.get<MealsVsLunchPlans[]>(this.mealsVsLunchPlanApi, {responseType: 'json'}).subscribe(lunchPlan => { this.mealsVsLunchPlan = Convert.toMealsVsLunchPlans(JSON.stringify(lunchPlan)); temp.next(lunchPlan)}, error => console.log(error), () => {  temp.next(this.mealsVsLunchPlan); console.log(this.mealsVsLunchPlan) })
     return temp.asObservable();
   }
+  public Edit(MealsVsLunchPlans: MealsVsLunchPlans[]): Observable<MealsVsLunchPlans[]> {
+    const temp = this.http.put<MealsVsLunchPlans[]>('https://webapiinfoscreenaspit.azurewebsites.net/api/ViewMealsVsLunchPlansJoins/' + MealsVsLunchPlans[0].week, Convert.mealsVsLunchPlansToJson(MealsVsLunchPlans))
+    console.log(temp);
+    return temp;
+  }
 }

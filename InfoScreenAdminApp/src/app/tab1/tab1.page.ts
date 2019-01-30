@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ApiConnectionService } from '../api-connection.service';
-import { MealsVsLunchPlans } from '../meals-vs-lunch-plan';
+import { MealsVsLunchPlans, Convert } from '../meals-vs-lunch-plan';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -17,22 +17,29 @@ export class Tab1Page {
        console.log(this.lunchPlans)
        return undefined;
      }
+     var lunchPlanner: any = {};
      const temp : MealsVsLunchPlans[] = [];
       this.lunchPlans.filter(function(value, index){
         if(temp.every(function(value2,index2) {
-            if (value.week != value2.week) {
-              return true
-            } 
-            else {
-              return false
-              }
+              if(value.week != value2.week){
+              return true;
             }
+              else{
+                return false;
+              }
+            } 
+          )
         )
-        ){
-          temp.push(value)
-        }
+        temp.push(value)
+        lunchPlanner = (JSON.parse(Convert.mealsVsLunchPlansToJson(temp)));
         }
       )
       return temp;
    }
+   public edit(MealsVsLunchPlans: MealsVsLunchPlans): void{
+    const LunchPlans: MealsVsLunchPlans[]  = []
+    LunchPlans.push(MealsVsLunchPlans)
+    this.api.Edit(LunchPlans).subscribe(lunchPlans => this.lunchPlans = lunchPlans, error => console.log(error), () => { console.log(this.lunchPlans)})
+    console.log(this.lunchPlans);
+  }
 }
