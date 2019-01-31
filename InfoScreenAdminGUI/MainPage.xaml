@@ -35,7 +35,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    
+
                     <!--Pivot item 1 food schedule grid (left side)-->
                     <Grid x:Name="GridMealPlan" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Width="Auto" BorderBrush="Black" BorderThickness="0">
                         <Grid.ColumnDefinitions>
@@ -103,7 +103,7 @@
 
 
                     </Grid>
-                    
+
                     <!--Pivot item 1 database dishes grid (right side)-->
                     <Grid Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" BorderBrush="Black" BorderThickness="0">
                         <Grid.RowDefinitions>
@@ -138,6 +138,9 @@
 
                 </Grid>
             </PivotItem>
+            <PivotItem Header="Rediger Layout">
+                <Grid/>
+            </PivotItem>
             <PivotItem Header="Fællesbesked">
                 <!--Pivot item 2 grid-->
                 <Grid HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
@@ -154,16 +157,13 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBox x:Name="TBoxTitle" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Left" Margin="5,0,0,0" Text="Titel her!" VerticalAlignment="Center" Height="45" Width="287" GotFocus="TBoxTitle_GotFocus" LostFocus="TBoxTitle_LostFocus"/>
-                            <Button x:Name="BtnSaveMessage" Grid.Column="1" Grid.ColumnSpan="1" Content="Gem" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Click="BtnSaveMessage_Click_1"/>
+                        <Button x:Name="BtnSaveMessage" Grid.Column="1" Grid.ColumnSpan="1" Content="Gem" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Click="BtnSaveMessage_Click_1"/>
 
                     </Grid>
 
-                    
+
                     <TextBox x:Name="TBoxMessage" Grid.Row="1" Grid.RowSpan="1" HorizontalAlignment="Left" Margin="5,5,0,0" Text="Besked her!" VerticalAlignment="Top" Height="auto" Width="auto" MinHeight="100" MinWidth="300" TextWrapping="Wrap" GotFocus="TBoxMessage_GotFocus" TextChanged="TBoxMessage_TextChanged" LostFocus="TBoxMessage_LostFocus"/>
                 </Grid>
-            </PivotItem>
-            <PivotItem Header="Rediger Layout">
-                <Grid/>
             </PivotItem>
         </Pivot>
         <!--Login inteface grid-->
