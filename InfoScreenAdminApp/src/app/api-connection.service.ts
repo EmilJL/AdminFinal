@@ -1,9 +1,8 @@
 import { Injectable, } from '@angular/core';
 import { RequestOptions,Headers,Http,Response } from '@angular/http';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Convert, MealsVsLunchPlans } from './meals-vs-lunch-plan'
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 const headers = new Headers({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
 

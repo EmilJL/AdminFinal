@@ -9,7 +9,7 @@ import { ModalComponent } from '../modal/modal.component'
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
-  private lunchPlans: MealsVsLunchPlans[];
+  public lunchPlans: MealsVsLunchPlans[];
   constructor(private api: ApiConnectionService, public modalController: ModalController) { 
     api.GetLunchPlan().subscribe(lunchPlans => this.lunchPlans = lunchPlans, error => console.log(error), () => { this.getLunchplansPrWeek()});
   
