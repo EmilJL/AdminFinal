@@ -58,23 +58,41 @@ namespace InfoScreenAdminGUI
                 Debug.Write(e);
             } 
         }
+
+        //See below.
         private void UpdateContent()
         {
         }
 
+        /// <summary>
+        /// This is ment for the possibility of making the application responsive.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdateContent();
         }
+
+        /// <summary>
+        /// Display lunchplan for given week and checks weither there's any duplicates in the DB, and if so, removes them.
+        /// </summary>
+        /// <param name="week">The week number of the lunchplan to display.</param>
         public void ShowSelectedLunchPlan(int week)
         {
+            //If no meal is selected, calls function to make the buttons for adding meals to weekdays unavailable to click and greyed out.
             if (ListViewDatabaseDishes.SelectedIndex == -1)
             {
                 AddingMealButtonAccessorChange(false);
             }
+            
+            //Not sure why this is done here, but unables, and greys out, the button that adds a meal to the DB from the searchfield.
             BtnAddDishToDB.IsHitTestVisible = false;
             BtnAddDishToDB.Opacity = 0.4;
+
+
             LunchPlan lunchPlan = new LunchPlan();
+            //If more than one lunchplan exists for the selected weeknumber, it's/they're removed from the DB.
             if (model.LunchPlans.Any(l => l.Week == week))
             {
                 if (model.LunchPlans.Where(l => l.Week == week).ToList().Count > 1)
@@ -84,13 +102,22 @@ namespace InfoScreenAdminGUI
                         lunchPlanHandler.DeleteLunchPlan(model.LunchPlans.Where(l => l.Week == week).ToList()[i].Id);
                     }
                 }
+
+                //Gets the remaining lunchplan.
                 lunchPlan = model.LunchPlans.Where(l => l.Week == week).FirstOrDefault();
+
+                //Gets any mealvslunchplans that corresponds to the lunchplan, and adds them to a list.
                 List<MealsVsLunchPlans> mealsVsLunchPlan = new List<MealsVsLunchPlans>();
                 mealsVsLunchPlan = model.MealsVsLunchPlans.Where(mvl => mvl.LunchPlanId == lunchPlan.Id).ToList();
+
                 int mealId = 0;
+
                 List<MealsVsLunchPlans> mvsToDelete = new List<MealsVsLunchPlans>();
+
+                //Checks weither there's any mvsl for "monday", in the list of mvsl of the current lunchplan.
                 if (mealsVsLunchPlan.Any(mvl => mvl.Weekday.ToLower() == "monday" || mvl.Weekday.ToLower() == "mandag"))
                 {
+                    //If there is more than one, it removes the earlier entries from the DB. Prob ugly way to do it, but since lists are reference types, I decided to do it like this.
                     if (mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "monday").ToList().Count > 1)
                     {
                         for (int i = 0; i < mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "monday").ToList().Count - 1; i++)
@@ -102,6 +129,7 @@ namespace InfoScreenAdminGUI
                     mealId = mealsVsLunchPlan.Where(mvl => mvl.Weekday.ToLower() == "monday" || mvl.Weekday.ToLower() == "mandag").LastOrDefault().MealId;
                     TBoxMonday.Text = model.Meals.Where(m => m.Id == mealId).FirstOrDefault().Description;
                 }
+                //If there is no mvsl for the current weekday, sets the text of the textblock to an empty string.
                 else
                 {
                     TBoxMonday.Text = "";
@@ -157,6 +185,7 @@ namespace InfoScreenAdminGUI
                 {
                     TBoxThursday.Text = "";
                 }
+                //If the friday is an even week, sets the text as "Fri"
                 if (week % 2 == 0)
                 {
                     TBoxFriday.Text = "Fri";
@@ -181,11 +210,13 @@ namespace InfoScreenAdminGUI
                         TBoxFriday.Text = "";
                     }
                 }
+                //Removes the same mvsl that's been removed from the DB, from the Model. Pretty useless since model is refreshed in the end of the function.
                 foreach (MealsVsLunchPlans mvs in mvsToDelete)
                 {
                     model.MealsVsLunchPlans.Remove(mvs);
                 }
             }
+            //If there is no lunchplan for the selected week, it sets the textblocks of the weekdays to empty, except for friday, if it's an even week.
             else
             {
                 TBoxMonday.Text = "";
@@ -201,8 +232,12 @@ namespace InfoScreenAdminGUI
                     TBoxFriday.Text = "";
                 }
             }
+            //Gets a new model by calling the DB.
             model = dbHandler.DbAccess.GetDataAndCreateModel();
         }
+
+        //Below code and comments is a copypaste:
+
         // This presumes that weeks start with Monday.
         // Week 1 is the 1st week of the year with a Thursday in it.
         public static int GetIso8601WeekOfYear(DateTime time)
@@ -229,25 +264,35 @@ namespace InfoScreenAdminGUI
 
         // ADD YEAR TO LUNCHPLAN? OR DELETE LUNCHPLANS EVERY YEAR - ADD TEXTBLOCK FOR ERRORMESSAGE. MAKE IT POSSIBLE TO ADD MEALS TO SEVERAL DAYS OF WEEK?
 
+        
+        /// <summary>
+        /// Is called when a new lunchplan is saved. Checks weither the meals of the lunchplan exists in the DB or not, and adds to their TimesChosen property.
+        /// </summary>
+        /// <param name="lunchPlan">The lunchplan for which to check the mvsl and meals.</param>
         private void CheckAndAddMealsVsLunchPlans(LunchPlan lunchPlan)
         {
             List<MealsVsLunchPlans> mealsVsLunchPlansToDelete = new List<MealsVsLunchPlans>();
             List<Meal> mealsToAddToMvS = new List<Meal>();
             List<string> weekdaysForMealsToAddToMvS = new List<string>();
+
+            // Checks weither the textfield has any text in it.
             if (TBoxMonday.Text != "")
             {
+                // Checks weither there already is a mealsvslunchplan where the week, weekday and meal is identical. If so, it does nothing.
                 if (model.MealsVsLunchPlans.Any(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Monday") && TBoxMonday.Text.ToLower() == model.Meals.Where(m => m.Id == model.MealsVsLunchPlans.Where(mvsl => mvsl.LunchPlanId == lunchPlan.Id && mvsl.Weekday == "Monday").FirstOrDefault().MealId).FirstOrDefault().Description.ToLower())
                 {
                 }
                 else
                 {
                     Meal meal = new Meal();
+                    //Checks to see if there is a meal corresponding to the textfield in the DB. If so, it adds 1 to its TimesChosen and updates it in the DB.
                     if (model.Meals.Any(m => m.Description.ToLower() == TBoxMonday.Text.ToLower()))
                     {
                         meal = model.Meals.Where(m => m.Description.ToLower() == TBoxMonday.Text.ToLower()).FirstOrDefault();
                         meal.TimesChosen = meal.TimesChosen + 1;
                         mealHandler.UpdateMeal(meal);
                     }
+                    //If there is not a corresponding meal, it adds a new one to the DB. Also outputs it to the log TBlock.
                     else
                     {
                         meal.Description = TBoxMonday.Text;
@@ -255,10 +300,12 @@ namespace InfoScreenAdminGUI
                         mealHandler.AddMeal(meal);
                         TBlockConsoleLog.Text += $"\nRetten '{meal.Description}' er blevet tilføjet til databasen.";
                     }
+                    //Adds the meal and the day of week to lists used for adding to mealvslunchplans.
                     mealsToAddToMvS.Add(meal);
                     weekdaysForMealsToAddToMvS.Add("Monday");
                 }
             }
+            //If the textfield is empty, checks weither there's a mealvslunchplan saved for the corresponding week and weekday, if so, it deletes it from the DB.
             else
             {
                 if (model.MealsVsLunchPlans.Any(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Monday"))
@@ -397,24 +444,41 @@ namespace InfoScreenAdminGUI
                     lunchPlanHandler.DeleteMealVsLunchPlan(model.MealsVsLunchPlans.Where(mvs => mvs.LunchPlanId == lunchPlan.Id && mvs.Weekday == "Friday").FirstOrDefault().Id);
                 }
             }
+            //Gets a new and updated model, from the DB. This can probably be avoided, if the model gets updated simultationsly to the DB, in the methodcalls above.
+            //The issue is that the meals don't have IDs until they've been added to the DB.
             model = dbHandler.DbAccess.GetDataAndCreateModel();
 
             int counter = 0;
+            //Adds the IDs to the meals, then adds them to mvsl.
             foreach (Meal meal in mealsToAddToMvS)
             {
                 meal.Id = model.Meals.Where(m => m.Description == meal.Description).FirstOrDefault().Id;
                 AddMealsVsLunchPlans(lunchPlan.Id, meal.Id, weekdaysForMealsToAddToMvS[counter]);
                 counter++;
             }
+            //Refreshes the list of meals, since some might've been added, and others might've gotten a higher number of TimesChosen, than some.
             ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
+
+            //Refreshes the searchbox to trigger the TextChanged method.
             string searchedText = TBoxSearchField.Text;
             TBoxSearchField.Text = "";
             TBoxSearchField.Text = searchedText;
+
+            //Outputs to the log TBlock
             TBlockConsoleLog.Text += $"\nMadplanen er blevet gemt i databasen.";
+
+            //Refreshes the Model again. (The model calls the DB). There should be no difference between this way of doing it, and the one done a bit earlier.
             model = new Model();
+
+            //Calls the method that displays the lunchplan.
             ShowSelectedLunchPlan((int)CmbBoxWeekNumbers.SelectedItem);
         }
-
+        /// <summary>
+        /// Adds MealVsLunchPlan to DB.
+        /// </summary>
+        /// <param name="lunchPlanId"></param>
+        /// <param name="mealId"></param>
+        /// <param name="weekday"></param>
         public void AddMealsVsLunchPlans(int lunchPlanId, int mealId, string weekday)
         {
             MealsVsLunchPlans mvs = new MealsVsLunchPlans
@@ -423,17 +487,26 @@ namespace InfoScreenAdminGUI
                 MealId = mealId,
                 Weekday = weekday
             };
+            //I don't know if this is included to Model anywhere else? Doing that might make some calls to the DB unnecessary.
             lunchPlanHandler.AddMealVsLunchPlan(mvs);
         }
-        //PERHAPS ENABLE SETTING DATE AND HAVING MULTIPLE MESSAGES STORED?
+        /*PERHAPS ENABLE SETTING DATE AND HAVING MULTIPLE MESSAGES STORED?
+         Pretty sure i implemented the function below, but I might have reverted it through reverting a github commit.*/
         private void BtnSaveMessage_Click(object sender, RoutedEventArgs e)
         {     
         }
+        /// <summary>
+        /// Displays the corresponding lunchplan, when a new weeknumber is selected.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CmbBoxWeekNumbers_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
             ShowSelectedLunchPlan((int)CmbBoxWeekNumbers.SelectedItem);
         }
 
+        /*The functions below adds the selected meal to the corresponding weekday, depending on which button is clicked. 
+        There should prob be some try/catching here.*/
         private void BtnAddDishMonday_Click_1(object sender, RoutedEventArgs e)
         {
             TBoxMonday.Text = ListViewDatabaseDishes.SelectedItem.ToString();
@@ -458,24 +531,31 @@ namespace InfoScreenAdminGUI
         {
             TBoxFriday.Text = ListViewDatabaseDishes.SelectedItem.ToString();
         }
-
+        /// <summary>
+        /// Creates/grabs a lunchplan and calls a method, to add or update it, to the DB.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnSavePlan_Click_1(object sender, RoutedEventArgs e)
         {
-            List<string> mealsOfWeek = new List<string>();
-            mealsOfWeek.Add(TBoxMonday.Text);
-            mealsOfWeek.Add(TBoxTuesday.Text);
-            mealsOfWeek.Add(TBoxWednesday.Text);
-            mealsOfWeek.Add(TBoxThursday.Text);
-            mealsOfWeek.Add(TBoxFriday.Text);
+            //List<string> mealsOfWeek = new List<string>();
+            //mealsOfWeek.Add(TBoxMonday.Text);
+            //mealsOfWeek.Add(TBoxTuesday.Text);
+            //mealsOfWeek.Add(TBoxWednesday.Text);
+            //mealsOfWeek.Add(TBoxThursday.Text);
+            //mealsOfWeek.Add(TBoxFriday.Text);
             LunchPlan lunchPlan = new LunchPlan();
-            List<Meal> meals = new List<Meal>();
+            //List<Meal> meals = new List<Meal>();
 
             int currentWeekNumber = int.Parse(CmbBoxWeekNumbers.SelectedValue.ToString());
+            //If lunchplan exists, grabs it from model, and uses it to call method.
             if (model.LunchPlans.Any(l => l.Week == currentWeekNumber))
             {
                 lunchPlan = model.LunchPlans.Where(l => l.Week == currentWeekNumber).LastOrDefault();
                 CheckAndAddMealsVsLunchPlans(lunchPlan);
             }
+            //If lunchplan doesn't exists, creates a new one, grabs the ID from the DB, and calls a method to add it to DB.
+            //Note that using an SQL statement, that returns the ID at the same time as adding it, would probably be more clean.
             else
             {
                 lunchPlan.Week = currentWeekNumber;
@@ -485,7 +565,11 @@ namespace InfoScreenAdminGUI
                 CheckAndAddMealsVsLunchPlans(lunchPlan);
             }
         }
-
+        /// <summary>
+        /// Updates the ListView of meals, and shows only those, which description includes the searchterm
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TBoxSearchField_TextChanged(object sender, TextChangedEventArgs e)
         {
             ListViewDatabaseDishes.SelectedIndex = -1;
@@ -538,7 +622,11 @@ namespace InfoScreenAdminGUI
             messageHandler.UpdateMessage(message);
             TBlockConsoleLog.Text += $"\nBeskeden er blevet gemt i databasen.";
         }
-
+        /// <summary>
+        /// Adds meal to DB and outputs it to the logbox.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnAddDishToDB_Click(object sender, RoutedEventArgs e)
         {
             if (!model.Meals.Any(m=> m.Description.ToLower() == TBoxSearchField.Text.ToLower()))

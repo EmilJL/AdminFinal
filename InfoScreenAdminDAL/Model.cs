@@ -11,6 +11,7 @@ namespace InfoScreenAdminDAL
     public class Model
     {
         DbAccess dbAccess = new DbAccess();
+        //This constructor can be called without having to parse any arguments. It then calls its other constructor by itself, but I think I've since then made it unnecessary.
         public Model()
         {
             dbAccess = new DbAccess();
