@@ -786,5 +786,15 @@ namespace InfoScreenAdminGUI
                 TBoxMessage.Text = @"Besked her!";
             }
         }
+
+        private void TBoxMessage_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if(e.Key == Windows.System.VirtualKey.Enter)
+            {
+                TextBox tb = (TextBox)sender;
+                tb.Text += "\n";
+                tb.SelectionStart = tb.Text.Length;
+            }
+        }
     }
 }
