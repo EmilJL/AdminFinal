@@ -113,6 +113,7 @@
     <Compile Include="Entities\MealsVsLunchPlans.cs" />
     <Compile Include="Entities\Message.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="PrivateInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\InfoScreenAdminDAL.rd.xml" />
   </ItemGroup>

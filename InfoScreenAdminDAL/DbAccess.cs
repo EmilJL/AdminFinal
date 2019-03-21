@@ -12,7 +12,7 @@ namespace InfoScreenAdminDAL
 {
     public class DbAccess
     {
-        private const string connectionString = @"Data Source=cvdb3,1488;Initial Catalog=DAHO.AspITInfoScreen;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private string connectionString = $"Data Source=10.205.112.33;Initial Catalog=DAHO.AspITInfoScreen;User ID={PrivateInfo.DbUser};Password={PrivateInfo.DbPassword};Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         public Model GetDataAndCreateModel()
         {
