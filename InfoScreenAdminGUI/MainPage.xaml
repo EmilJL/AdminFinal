@@ -161,7 +161,7 @@
 
                     </Grid>
 
-                    <TextBox x:Name="TBoxMessage" Grid.Row="1" Grid.RowSpan="1" HorizontalAlignment="Left" Margin="5,5,0,0" Text="Besked her!" VerticalAlignment="Top" Height="auto" Width="auto" MinHeight="100" MinWidth="300" TextWrapping="Wrap" GotFocus="TBoxMessage_GotFocus" TextChanged="TBoxMessage_TextChanged" LostFocus="TBoxMessage_LostFocus" KeyDown="TBoxMessage_KeyDown"/>
+                    <TextBox x:Name="TBoxMessage" Grid.Row="1" Grid.RowSpan="1" HorizontalAlignment="Left" Margin="5,5,0,0" Text="Besked her!" VerticalAlignment="Top" Height="auto" Width="auto" MinHeight="100" MinWidth="300" TextWrapping="Wrap" GotFocus="TBoxMessage_GotFocus" LostFocus="TBoxMessage_LostFocus" KeyDown="TBoxMessage_KeyDown"/>
                 </Grid>
             </PivotItem>
         </Pivot>

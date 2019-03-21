@@ -613,14 +613,28 @@ namespace InfoScreenAdminGUI
 
         private void BtnSaveMessage_Click_1(object sender, RoutedEventArgs e)
         {
-            Message message = model.Messages.Last();
-            message.Text = TBoxMessage.Text;
-            message.Header = TBoxTitle.Text;
-            //INSERT CURRENT ADMIN
-            message.AdminId = 1;
-            message.Date = DateTime.Now;
-            messageHandler.UpdateMessage(message);
-            TBlockConsoleLog.Text += $"\nBeskeden er blevet gemt i databasen.";
+            Message message = model.Messages.LastOrDefault();
+            if(message == null)
+            {
+                message = new Message();
+                message.Text = TBoxMessage.Text;
+                message.Header = TBoxTitle.Text;
+                //INSERT CURRENT ADMIN
+                message.AdminId = 1;
+                message.Date = DateTime.Now;
+                messageHandler.AddMessage(message);
+                TBlockConsoleLog.Text += $"\nBeskeden er blevet oprettet i databasen.";
+            } else
+            {
+                message.Text = TBoxMessage.Text;
+                message.Header = TBoxTitle.Text;
+                //INSERT CURRENT ADMIN
+                message.AdminId = 1;
+                message.Date = DateTime.Now;
+                messageHandler.UpdateMessage(message);
+                TBlockConsoleLog.Text += $"\nBeskeden er blevet gemt i databasen.";
+            }
+            
         }
         /// <summary>
         /// Adds meal to DB and outputs it to the logbox.
@@ -759,15 +773,6 @@ namespace InfoScreenAdminGUI
             if (TBoxMessage.Text == @"Besked her!")
             {
                 TBoxMessage.Text = "";
-            }
-        }
-
-        private async void TBoxMessage_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (TBoxMessage.Text.Count() >= 200)
-            {
-                var dialog = new MessageDialog($"Beskeden er nu på {TBoxMessage.Text.Count()} tegn. Det er ikke muligt at gemme en besked, med mere end 200.");
-                await dialog.ShowAsync();
             }
         }
 
