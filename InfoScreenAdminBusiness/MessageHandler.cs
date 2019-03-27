@@ -51,6 +51,23 @@ namespace InfoScreenAdminBusiness
                 return false;
             }
         }
+
+        public bool DeleteMessageByAdminId(int id)
+        {
+            try
+            {
+                Message m = Model.Messages.Where(message => message.AdminId == id).FirstOrDefault();
+                DbAccess.DeleteMessage(m.Id);
+                Model.Messages.Remove(m);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                return false;
+            }
+            
+        }
         public bool UpdateMessage(Message message)
         {
             try

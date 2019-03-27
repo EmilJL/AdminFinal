@@ -1,0 +1,21 @@
+﻿<ContentDialog
+    x:Class="InfoScreenAdminGUI.UserLogIn"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:InfoScreenAdminGUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Indtast log ind informationer"
+    PrimaryButtonText="Log ind"
+    SecondaryButtonText="Afbryd"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid>
+        <StackPanel x:Name="StackPanelNewUser" Spacing="10">
+            <TextBox x:Name="TBoxUsername" PlaceholderText="Bruger navn..." Width="180" HorizontalAlignment="Center"/>
+            <PasswordBox x:Name="TBoxPassword" PlaceholderText="Kodeord..." Width="180" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</ContentDialog>

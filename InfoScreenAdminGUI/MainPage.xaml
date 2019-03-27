@@ -138,7 +138,7 @@
 
                 </Grid>
             </PivotItem>
-            <PivotItem Header="Rediger Layout">
+            <PivotItem Header="Rediger Layout" IsEnabled="False">
                 <Grid/>
             </PivotItem>
             <PivotItem Header="Fællesbesked">
@@ -157,7 +157,7 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBox x:Name="TBoxTitle" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Left" Margin="5,0,0,0" Text="Titel her!" VerticalAlignment="Center" Height="45" Width="287" GotFocus="TBoxTitle_GotFocus" LostFocus="TBoxTitle_LostFocus"/>
-                        <Button x:Name="BtnSaveMessage" Grid.Column="1" Grid.ColumnSpan="1" Content="Gem" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Click="BtnSaveMessage_Click_1"/>
+                        <Button x:Name="BtnSaveMessage" Grid.Column="1" Grid.ColumnSpan="2" Content="Gem" HorizontalAlignment="Stretch" Margin="5,0,-0.2,0" VerticalAlignment="Center" Click="BtnSaveMessage_Click_1"/>
 
                     </Grid>
 
@@ -176,15 +176,14 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock x:Name="TBlockCurrentUser" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,0,0,0" Text="User: None" VerticalAlignment="Center" Height="auto" Width="auto"/>
-            <Button x:Name="BtnLogIn" Grid.Row="1" Content="Log ind" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" MinWidth="125"/>
-            <Button x:Name="BtnLogOut" Grid.Column="1" Grid.Row="1" Content="Log ud" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" MinWidth="125"/>
-            <Button x:Name="BtnChangePassword" Grid.Row="1" Content="Ændre kodeord" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Center" MinWidth="125"/>
-            <Button x:Name="BtnEmpty" Grid.Column="1" Grid.Row="1" Content="Drop DB" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Center" MinWidth="125"/>
+            <Button x:Name="BtnLogIn" Grid.Row="1" Content="Log ind" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" MinWidth="125" Click="BtnLogIn_Click"/>
+            <Button x:Name="BtnDeleteUser" Grid.Column="1" Grid.Row="1" Content="Slet bruger" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" MinWidth="125" Click="BtnDeleteUser_Click"/>
+            <Button x:Name="BtnChangePassword" IsEnabled="False" Grid.Row="1" Content="Ændre kodeord" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Center" MinWidth="125"/>
+            <Button x:Name="BtnNewAdmin" Grid.Column="1" Grid.Row="1" Content="Ny bruger" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Center" MinWidth="125" Click="BtnNewAdmin_Click"/>
         </Grid>
         <!--Output window grid-->
         <Grid Grid.Row="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" Margin="40,40,40,40" VerticalAlignment="Stretch">
             <TextBlock x:Name="TBlockConsoleLog" TextWrapping="Wrap" Text="" Margin="5,5,5,5" Width="auto" Height="auto"/>
-
         </Grid>
     </Grid>
 </Page>

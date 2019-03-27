@@ -69,6 +69,26 @@ namespace InfoScreenAdminBusiness
             
         }
 
+        public bool CreateAndAddAdmin(string name, string password)
+        {
+            try
+            {
+                byte[] salt = CreateSalt();
+                byte[] hash = HashPassword(password, salt);
+
+                if (VerifyHashedPassword(hash, salt, password))
+                {
+                    AddAdmin(new Admin(name, salt, hash));
+                    return true;
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e);
+                return false;
+            }
+        }
         public bool ChangePassword(int id, string currentPassword, string newPassword)
         {
             Admin admin = GetAdmin(id);
@@ -130,7 +150,8 @@ namespace InfoScreenAdminBusiness
         }
         public bool VerifyHashedPassword(byte[] hashedPassword, byte[] passwordSalt, string providedPassword)
         {
-            var decodedHashedPassword = hashedPassword;
+
+            var decodedHashedPassword = Decode(hashedPassword); //Added Decode call on password
 
             // Wrong version
             if (decodedHashedPassword[0] != 0x01)
@@ -147,7 +168,7 @@ namespace InfoScreenAdminBusiness
                 return false;
             }
             // *WARNING*  Made a change here
-            var salt = new byte[passwordSalt.Length];
+            var salt = new byte[Decode(passwordSalt).Length];  //Added Decode call on password
             Buffer.BlockCopy(decodedHashedPassword, 13, salt, 0, salt.Length);
 
             // Read the subkey (the rest of the payload): must be >= 128 bits
@@ -162,6 +183,18 @@ namespace InfoScreenAdminBusiness
             // Hash the incoming password and verify it
             var actualSubkey = KeyDerivation.Pbkdf2(providedPassword, salt, prf, iterCount, subkeyLength);
             return actualSubkey.SequenceEqual(expectedSubkey);
+        }
+
+        private byte[] Decode(byte[] packet)
+        {
+            var i = packet.Length - 1;
+            while(packet[i] == 0)
+            {
+                --i;
+            }
+            byte[] temp = new byte[i + 1];
+            Array.Copy(packet, temp, i + 1);
+            return temp;
         }
     }
 }

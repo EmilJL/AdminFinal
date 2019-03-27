@@ -18,6 +18,8 @@ using InfoScreenAdminBusiness;
 using System.Globalization;
 using System.Diagnostics;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
+using Windows.ApplicationModel.Core;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -35,6 +37,7 @@ namespace InfoScreenAdminGUI
         private AdminHandler adminHandler;
         private MealHandler mealHandler;
         private MessageHandler messageHandler;
+        private Admin currentUser;
 
         public MainPage()
         {
@@ -43,6 +46,7 @@ namespace InfoScreenAdminGUI
             mealHandler = new MealHandler();
             dbHandler = new DBHandler();
             messageHandler = new MessageHandler();
+            adminHandler = new AdminHandler();
             model = dbHandler.Model;
             CmbBoxWeekNumbers.ItemsSource = Enumerable.Range(1, 52);
             CmbBoxWeekNumbers.SelectedIndex = GetIso8601WeekOfYear(DateTime.Now) - 1;
@@ -52,6 +56,7 @@ namespace InfoScreenAdminGUI
             try
             {
                 ListViewDatabaseDishes.ItemsSource = model.Meals.OrderByDescending(m => m.TimesChosen);
+                LoadMessage();
             }
             catch (ArgumentNullException e)
             {
@@ -72,6 +77,13 @@ namespace InfoScreenAdminGUI
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdateContent();
+        }
+
+        private void LoadMessage()
+        {
+            Message m = messageHandler.GetNewestMessage();
+            TBoxMessage.Text = m.Text;
+            TBoxTitle.Text = m.Header;
         }
 
         /// <summary>
@@ -613,28 +625,31 @@ namespace InfoScreenAdminGUI
 
         private void BtnSaveMessage_Click_1(object sender, RoutedEventArgs e)
         {
-            Message message = model.Messages.LastOrDefault();
-            if(message == null)
+            if(currentUser != null)
             {
-                message = new Message();
-                message.Text = TBoxMessage.Text;
-                message.Header = TBoxTitle.Text;
-                //INSERT CURRENT ADMIN
-                message.AdminId = 1;
-                message.Date = DateTime.Now;
-                messageHandler.AddMessage(message);
-                TBlockConsoleLog.Text += $"\nBeskeden er blevet oprettet i databasen.";
+                Message message = model.Messages.LastOrDefault();
+                if(message == null)
+                {
+                    message = new Message();
+                    message.Text = TBoxMessage.Text;
+                    message.Header = TBoxTitle.Text;
+                    message.AdminId = currentUser.Id;
+                    message.Date = DateTime.Now;
+                    messageHandler.AddMessage(message);
+                    TBlockConsoleLog.Text += $"\nBeskeden er blevet oprettet i databasen.";
+                } else
+                {
+                    message.Text = TBoxMessage.Text;
+                    message.Header = TBoxTitle.Text;
+                    message.AdminId = currentUser.Id;
+                    message.Date = DateTime.Now;
+                    messageHandler.UpdateMessage(message);
+                    TBlockConsoleLog.Text += $"\nBeskeden er blevet gemt i databasen.";
+                }
             } else
             {
-                message.Text = TBoxMessage.Text;
-                message.Header = TBoxTitle.Text;
-                //INSERT CURRENT ADMIN
-                message.AdminId = 1;
-                message.Date = DateTime.Now;
-                messageHandler.UpdateMessage(message);
-                TBlockConsoleLog.Text += $"\nBeskeden er blevet gemt i databasen.";
+                TBlockConsoleLog.Text += $"\nEn bruger skal være logget ind inden en besked kan oprettes.";
             }
-            
         }
         /// <summary>
         /// Adds meal to DB and outputs it to the logbox.
@@ -799,6 +814,102 @@ namespace InfoScreenAdminGUI
                 TextBox tb = (TextBox)sender;
                 tb.Text += "\n";
                 tb.SelectionStart = tb.Text.Length;
+            }
+        }
+
+        private async void BtnNewAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            NewUser newUser = new NewUser();
+            await newUser.ShowAsync();
+
+            switch (newUser.Result)
+            {
+                case ContentDialogResult.Ok:
+                    if (adminHandler.Model.Admins.Any(a => a.Username == newUser.DesiredName) == false)
+                    {
+                        adminHandler.CreateAndAddAdmin(newUser.DesiredName, newUser.DesiredPassword);
+                    }
+                    else
+                    {
+                        TBlockConsoleLog.Text += $"\nFejl i brugernavn eller kodeord";
+                    }
+                    break;
+                case ContentDialogResult.Cancel:
+                    TBlockConsoleLog.Text += $"\nIkke udført. Handling afbrudt";
+                    break;
+                case ContentDialogResult.Fail:
+                    TBlockConsoleLog.Text += $"\nNoget gik galt. Prøv igen";
+                    break;
+                default:
+                    TBlockConsoleLog.Text += $"\nHandling afbrudt";
+                    break;
+            }
+        }
+
+        private async void BtnLogIn_Click(object sender, RoutedEventArgs e)
+        {
+            UserLogIn login = new UserLogIn();
+            await login.ShowAsync();
+
+            switch (login.Result)
+            {
+                case ContentDialogResult.Ok:
+                    try
+                    {
+                        if (adminHandler.VerifyPassword(login.InputUsername, login.InputPassword))
+                        {
+                            currentUser = adminHandler.GetAdminByUsername(login.InputUsername);
+                            TBlockCurrentUser.Text = "Bruger: " + currentUser.Username;
+                            BtnLogIn.Content = "Skift bruger";
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        TBlockConsoleLog.Text += $"\nBrugernavn eller kodeord ikke indtastet korrekt";
+                        Debug.Write(error.Message);
+                    }
+                    break;
+                case ContentDialogResult.Cancel:
+                    TBlockConsoleLog.Text += $"\nIkke logget ind. Handling afbrudt";
+                    break;
+                case ContentDialogResult.Fail:
+                    TBlockConsoleLog.Text += $"\nNoget gik galt. Check brugernavn og kodeord";
+                    break;
+                default:
+                    TBlockConsoleLog.Text += $"\nHandling afbrudt";
+                    break;
+            }
+        }
+
+        private async void BtnDeleteUser_Click(object sender, RoutedEventArgs e)
+        {
+            NewUser user = new NewUser();
+            await user.ShowAsync();
+
+            switch (user.Result)
+            {
+                case ContentDialogResult.Ok:
+                    if (adminHandler.Model.Admins.Any(a => a.Username == user.DesiredName) == true)
+                    {
+                        Admin a = adminHandler.GetAdminByUsername(user.DesiredName);
+                        messageHandler.DeleteMessageByAdminId(a.Id);
+                        adminHandler.DeleteAdmin(a.Id);
+                        TBlockConsoleLog.Text += $"\nBruger slettet";
+                    }
+                    else
+                    {
+                        TBlockConsoleLog.Text += $"\nFejl i brugernavn eller kodeord";
+                    }
+                    break;
+                case ContentDialogResult.Cancel:
+                    TBlockConsoleLog.Text += $"\nIkke udført. Handling afbrudt";
+                    break;
+                case ContentDialogResult.Fail:
+                    TBlockConsoleLog.Text += $"\nNoget gik galt. Prøv igen";
+                    break;
+                default:
+                    TBlockConsoleLog.Text += $"\nHandling afbrudt";
+                    break;
             }
         }
     }

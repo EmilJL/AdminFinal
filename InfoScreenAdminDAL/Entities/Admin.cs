@@ -24,6 +24,10 @@ namespace InfoScreenAdminDAL.Entities
             PasswordSalt = passwordSalt;
             PasswordHash = passwordHash;
         }
+        public Admin(string username, byte[] passwordSalt, byte[] passwordHash, int id) : this(username, passwordHash, passwordSalt)
+        {
+            Id = id;
+        }
         public string Username
         {
             get { return username; }
