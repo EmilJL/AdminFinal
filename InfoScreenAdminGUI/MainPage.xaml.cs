@@ -922,8 +922,11 @@ namespace InfoScreenAdminGUI
                 IpAddress ipAddress = iPHandler.GetIp();
                 Uri uri = new Uri("http://" + ipAddress.Ip + ":8080/");
                 WebViewRaspberry.Source = uri;
-                BtnConnectDevice.Visibility = Visibility.Collapsed;
+                BtnConnectDevice.VerticalAlignment = VerticalAlignment.Top;
+                BtnConnectDevice.HorizontalAlignment = HorizontalAlignment.Left;
+                BtnConnectDevice.Content = "Genindlæs";
                 WebViewRaspberry.Visibility = Visibility.Visible;
+                WebViewRaspberry.Margin = new Thickness(0, BtnConnectDevice.ActualHeight, 0, 0);
             }
             catch (Exception)
             {
