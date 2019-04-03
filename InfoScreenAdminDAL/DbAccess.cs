@@ -21,12 +21,14 @@ namespace InfoScreenAdminDAL
             const string GetMessagesQuery = "SELECT * from Messages";
             const string GetMealsQuery = "SELECT * from Meals";
             const string GetMealsVsLunchPlansQuery = "SELECT * from MealsVsLunchPlans";
+            const string GetIpQuery = "SELECT * FROM DeviceIP";
             var admins = new ObservableCollection<Admin>();
             var lunchPlans = new ObservableCollection<LunchPlan>();
             var messages = new ObservableCollection<Message>();
             var meals = new ObservableCollection<Meal>();
             var mealsVsLunchPlansCollection = new ObservableCollection<MealsVsLunchPlans>();
-            
+            var ip = new ObservableCollection<IpAddress>();
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -99,6 +101,19 @@ namespace InfoScreenAdminDAL
                                     mealsVsLunchPlansCollection.Add(mealsVsLunchPlans);
                                 }
                             }
+                            cmd.CommandText = GetIpQuery;
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    var address = new IpAddress
+                                    {
+                                        Id = reader.GetInt32(0),
+                                        Ip = reader.GetString(1)
+                                    };
+                                    ip.Add(address);
+                                }
+                            }
                         }
                     }
                 }
@@ -107,7 +122,7 @@ namespace InfoScreenAdminDAL
             {
                 Debug.WriteLine("Exception: " + eSql.Message);
             }
-            Model model = new Model(admins, lunchPlans, messages, meals, mealsVsLunchPlansCollection);
+            Model model = new Model(admins, lunchPlans, messages, meals, mealsVsLunchPlansCollection, ip);
             return model;
         }
         public void AddAdmin(Admin admin)
@@ -500,6 +515,56 @@ namespace InfoScreenAdminDAL
             catch (Exception eSql)
             {
                 Debug.WriteLine("Exception: " + eSql.Message);
+            }
+        }
+        public bool SetActiveIP(InfoScreenAdminDAL.Entities.IpAddress ip)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        using (SqlCommand cmd = new SqlCommand("UPDATE DeviceIP SET Device = @Device WHERE Id = @Id", conn))
+                        {
+                            cmd.Parameters.AddWithValue("@Device", ip.Ip);
+                            cmd.Parameters.AddWithValue("@Id", ip.Id);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception eSql)
+            {
+                Debug.WriteLine("Exception: " + eSql.Message);
+                return false;
+            }
+        }
+
+        public bool CreateNewIP(string ip)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        using (SqlCommand cmd = new SqlCommand("INSERT INTO DeviceIP (Device) VALUES (@Device)", conn))
+                        {
+                            cmd.Parameters.AddWithValue("@Device", ip);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception eSql)
+            {
+                Debug.WriteLine("Exception: " + eSql.Message);
+                return false;
             }
         }
     }

@@ -138,8 +138,11 @@
 
                 </Grid>
             </PivotItem>
-            <PivotItem Header="Rediger Layout" IsEnabled="False">
-                <Grid/>
+            <PivotItem Header="Raspberry">
+                <Grid>
+                    <WebView x:Name="WebViewRaspberry" Visibility="Collapsed"/>
+                    <Button x:Name="BtnConnectDevice" Content="Forbind til Raspberry" VerticalAlignment="Center" HorizontalAlignment="Center" Click="BtnConnectDevice_Click"/>
+                </Grid>
             </PivotItem>
             <PivotItem Header="Fællesbesked">
                 <!--Pivot item 2 grid-->

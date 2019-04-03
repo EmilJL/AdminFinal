@@ -38,6 +38,7 @@ namespace InfoScreenAdminGUI
         private MealHandler mealHandler;
         private MessageHandler messageHandler;
         private Admin currentUser;
+        private IPHandler iPHandler;
 
         public MainPage()
         {
@@ -47,6 +48,7 @@ namespace InfoScreenAdminGUI
             dbHandler = new DBHandler();
             messageHandler = new MessageHandler();
             adminHandler = new AdminHandler();
+            iPHandler = new IPHandler();
             model = dbHandler.Model;
             CmbBoxWeekNumbers.ItemsSource = Enumerable.Range(1, 52);
             CmbBoxWeekNumbers.SelectedIndex = GetIso8601WeekOfYear(DateTime.Now) - 1;
@@ -910,6 +912,22 @@ namespace InfoScreenAdminGUI
                 default:
                     TBlockConsoleLog.Text += $"\nHandling afbrudt";
                     break;
+            }
+        }
+
+        private void BtnConnectDevice_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                IpAddress ipAddress = iPHandler.GetIp();
+                Uri uri = new Uri("http://" + ipAddress.Ip + ":8080/");
+                WebViewRaspberry.Source = uri;
+                BtnConnectDevice.Visibility = Visibility.Collapsed;
+                WebViewRaspberry.Visibility = Visibility.Visible;
+            }
+            catch (Exception)
+            {
+                TBlockConsoleLog.Text += $"\nKunne ikke oprette forbindelse.";
             }
         }
     }

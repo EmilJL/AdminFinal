@@ -21,14 +21,16 @@ namespace InfoScreenAdminDAL
             Messages = model.Messages;
             Meals = model.Meals;
             MealsVsLunchPlans = model.MealsVsLunchPlans;
+            IpAddresses = model.IpAddresses;
         }
-        public Model(ObservableCollection<Admin> admins, ObservableCollection<LunchPlan> lunchPlans, ObservableCollection<Message> messages, ObservableCollection<Meal> meals, ObservableCollection<MealsVsLunchPlans> mealsVsLunchPlans)
+        public Model(ObservableCollection<Admin> admins, ObservableCollection<LunchPlan> lunchPlans, ObservableCollection<Message> messages, ObservableCollection<Meal> meals, ObservableCollection<MealsVsLunchPlans> mealsVsLunchPlans, ObservableCollection<IpAddress> ipAddresses)
         {
             Admins = admins;
             LunchPlans = lunchPlans;
             Messages = messages;
             Meals = meals;
             MealsVsLunchPlans = mealsVsLunchPlans;
+            IpAddresses = ipAddresses;
         }
         // PRIVATE SETTERS?
         public ObservableCollection<Meal> Meals { get; set; }
@@ -36,5 +38,6 @@ namespace InfoScreenAdminDAL
         public ObservableCollection<LunchPlan> LunchPlans { get; set; }
         public ObservableCollection<Message> Messages { get; set; }
         public ObservableCollection<MealsVsLunchPlans> MealsVsLunchPlans { get; set; }
+        public ObservableCollection<IpAddress> IpAddresses { get; private set; }
     }
 }
