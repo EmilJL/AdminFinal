@@ -925,13 +925,33 @@ namespace InfoScreenAdminGUI
                 BtnConnectDevice.VerticalAlignment = VerticalAlignment.Top;
                 BtnConnectDevice.HorizontalAlignment = HorizontalAlignment.Left;
                 BtnConnectDevice.Content = "Genindlæs";
+                BtnStopConnection.Visibility = Visibility.Visible;
+                BtnStopConnection.Margin = new Thickness(BtnConnectDevice.ActualWidth, 0, 0, 0);
                 WebViewRaspberry.Visibility = Visibility.Visible;
                 WebViewRaspberry.Margin = new Thickness(0, BtnConnectDevice.ActualHeight, 0, 0);
             }
             catch (Exception)
             {
-                TBlockConsoleLog.Text += $"\nKunne ikke oprette forbindelse.";
+                TBlockConsoleLog.Text += $"\nKunne ikke oprette forbindelse på ip {iPHandler.GetIp().Ip} og port 8080. Prøv igen eller forsøg i en browser f.eks. firefox.";
             }
+        }
+
+        private void BtnStopConnection_Click(object sender, RoutedEventArgs e)
+        {
+            WebViewRaspberry.Stop();
+            WebViewRaspberry.Source = new Uri("about:blank");
+            WebViewRaspberry.Visibility = Visibility.Collapsed;
+
+            BtnConnectDevice.VerticalAlignment = VerticalAlignment.Center;
+            BtnConnectDevice.HorizontalAlignment = HorizontalAlignment.Center;
+            BtnConnectDevice.Content = "Forbind til Raspberry";
+
+            BtnStopConnection.Visibility = Visibility.Collapsed;
+        }
+
+        private void WebViewRaspberry_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
+        {
+            TBlockConsoleLog.Text += $"\nKunne ikke oprette forbindelse på ip {iPHandler.GetIp().Ip} og port 8080. Prøv igen eller forsøg i en browser f.eks. firefox.";
         }
     }
 }

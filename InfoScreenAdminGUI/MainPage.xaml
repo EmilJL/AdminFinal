@@ -140,8 +140,9 @@
             </PivotItem>
             <PivotItem Header="Raspberry">
                 <Grid>
-                    <WebView x:Name="WebViewRaspberry" Visibility="Collapsed"/>
+                    <WebView x:Name="WebViewRaspberry" Visibility="Collapsed" NavigationFailed="WebViewRaspberry_NavigationFailed"/>
                     <Button x:Name="BtnConnectDevice" Content="Forbind til Raspberry" VerticalAlignment="Center" HorizontalAlignment="Center" Click="BtnConnectDevice_Click"/>
+                    <Button x:Name="BtnStopConnection" Content="Luk forbindelse" VerticalAlignment="Top" HorizontalAlignment="Left" Visibility="Collapsed" Click="BtnStopConnection_Click"/>
                 </Grid>
             </PivotItem>
             <PivotItem Header="Fællesbesked">
