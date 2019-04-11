@@ -863,6 +863,8 @@ namespace InfoScreenAdminGUI
                             currentUser = adminHandler.GetAdminByUsername(login.InputUsername);
                             TBlockCurrentUser.Text = "Bruger: " + currentUser.Username;
                             BtnLogIn.Content = "Skift bruger";
+                            BtnNewAdmin.IsEnabled = true;
+                            BtnDeleteUser.IsEnabled = true;
                         }
                     }
                     catch (Exception error)
@@ -919,9 +921,11 @@ namespace InfoScreenAdminGUI
         {
             try
             {
+                //Connect
                 IpAddress ipAddress = iPHandler.GetIp();
-                Uri uri = new Uri("http://" + ipAddress.Ip + ":8080/");
+                Uri uri = new Uri("http://" + ipAddress.Ip + ":8080");
                 WebViewRaspberry.Source = uri;
+                //GUI update
                 BtnConnectDevice.VerticalAlignment = VerticalAlignment.Top;
                 BtnConnectDevice.HorizontalAlignment = HorizontalAlignment.Left;
                 BtnConnectDevice.Content = "Genindlæs";
@@ -948,7 +952,6 @@ namespace InfoScreenAdminGUI
 
             BtnStopConnection.Visibility = Visibility.Collapsed;
         }
-
         private void WebViewRaspberry_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
         {
             TBlockConsoleLog.Text += $"\nKunne ikke oprette forbindelse på ip {iPHandler.GetIp().Ip} og port 8080. Prøv igen eller forsøg i en browser f.eks. firefox.";

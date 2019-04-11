@@ -181,9 +181,9 @@
             </Grid.RowDefinitions>
             <TextBlock x:Name="TBlockCurrentUser" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,0,0,0" Text="User: None" VerticalAlignment="Center" Height="auto" Width="auto"/>
             <Button x:Name="BtnLogIn" Grid.Row="1" Content="Log ind" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" MinWidth="125" Click="BtnLogIn_Click"/>
-            <Button x:Name="BtnDeleteUser" Grid.Column="1" Grid.Row="1" Content="Slet bruger" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" MinWidth="125" Click="BtnDeleteUser_Click"/>
+            <Button x:Name="BtnDeleteUser" IsEnabled="False" Grid.Column="1" Grid.Row="1" Content="Slet bruger" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" MinWidth="125" Click="BtnDeleteUser_Click"/>
             <Button x:Name="BtnChangePassword" IsEnabled="False" Grid.Row="1" Content="Ændre kodeord" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Center" MinWidth="125"/>
-            <Button x:Name="BtnNewAdmin" Grid.Column="1" Grid.Row="1" Content="Ny bruger" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Center" MinWidth="125" Click="BtnNewAdmin_Click"/>
+            <Button x:Name="BtnNewAdmin" IsEnabled="False" Grid.Column="1" Grid.Row="1" Content="Ny bruger" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Center" MinWidth="125" Click="BtnNewAdmin_Click"/>
         </Grid>
         <!--Output window grid-->
         <Grid Grid.Row="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" Margin="40,40,40,40" VerticalAlignment="Stretch">
